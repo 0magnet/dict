@@ -26,7 +26,7 @@ demo-tinygo: ## build the demo with TinyGo instead (a third the size, minutes no
 	cp "$$(GOTOOLCHAIN=$$(sh scripts/tinygo-toolchain.sh) tinygo env TINYGOROOT)/targets/wasm_exec.js" docs/wasm_exec.js
 
 serve: demo ## serve the demo at http://127.0.0.1:8791
-	cd docs && python3 -m http.server 8791
+	go run ./serve -dir docs -addr :8791
 
 clean:
 	rm -f docs/dict.wasm
