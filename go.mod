@@ -4,11 +4,11 @@ go 1.25.7
 
 require (
 	github.com/0magnet/afero v1.15.1-0.20260816202415-9f9d46a34dcd
-	github.com/0magnet/calvin v0.0.0-20260827183707-92b02e6b3d3d
+	github.com/0magnet/calvin v0.0.0-20260903022122-1518a55e53f3
 	github.com/0magnet/coloredcobra v1.0.2
 	github.com/0magnet/sh/v3 v3.13.2-0.20260818190530-13d0024da85c
-	github.com/0magnet/termanim v0.0.0-20260830013100-251b3b022971
-	github.com/0magnet/websh v0.0.0-20260828165124-20fbdb64764c
+	github.com/0magnet/termanim v0.0.0-20260903022407-3c9a5cc9ee76
+	github.com/0magnet/websh v0.0.0-20260903023334-1f972db1b545
 	github.com/gdamore/tcell/v3 v3.4.2
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
@@ -17,7 +17,7 @@ require (
 
 require (
 	github.com/0magnet/u-root v0.16.1-0.20260814161052-156e0b67262b // indirect
-	github.com/0magnet/xterm-go v0.0.0-20260827183933-3cefcc1ae905 // indirect
+	github.com/0magnet/xterm-go v0.0.0-20260903022452-f823b747bcfe // indirect
 	github.com/benhoyt/goawk v1.31.0 // indirect
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
