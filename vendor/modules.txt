@@ -1,0 +1,105 @@
+# github.com/0magnet/afero v1.15.1-0.20260816202415-9f9d46a34dcd
+## explicit; go 1.25.0
+github.com/0magnet/afero
+github.com/0magnet/afero/internal/common
+github.com/0magnet/afero/mem
+# github.com/0magnet/calvin v0.0.0-20260903022122-1518a55e53f3
+## explicit; go 1.25.0
+github.com/0magnet/calvin
+# github.com/0magnet/coloredcobra v1.0.2
+## explicit; go 1.15
+github.com/0magnet/coloredcobra
+# github.com/0magnet/sh/v3 v3.13.2-0.20260818190530-13d0024da85c
+## explicit; go 1.25.0
+github.com/0magnet/sh/v3/expand
+github.com/0magnet/sh/v3/fileutil
+github.com/0magnet/sh/v3/internal
+github.com/0magnet/sh/v3/interp
+github.com/0magnet/sh/v3/pattern
+github.com/0magnet/sh/v3/syntax
+# github.com/0magnet/termanim v0.0.0-20260903022407-3c9a5cc9ee76
+## explicit; go 1.25.0
+github.com/0magnet/termanim/canvas
+github.com/0magnet/termanim/matrix
+github.com/0magnet/termanim/matrix/backdrop
+# github.com/0magnet/u-root v0.16.1-0.20260814161052-156e0b67262b
+## explicit; go 1.25.7
+github.com/0magnet/u-root/pkg/ls
+# github.com/0magnet/websh v0.0.0-20260903023334-1f972db1b545
+## explicit; go 1.25.7
+github.com/0magnet/websh/shell
+github.com/0magnet/websh/shell/browser
+github.com/0magnet/websh/web
+# github.com/0magnet/xterm-go v0.0.0-20260903022452-f823b747bcfe
+## explicit; go 1.24
+github.com/0magnet/xterm-go
+github.com/0magnet/xterm-go/vt
+# github.com/benhoyt/goawk v1.31.0
+## explicit; go 1.20
+github.com/benhoyt/goawk/internal/ast
+github.com/benhoyt/goawk/internal/compiler
+github.com/benhoyt/goawk/internal/resolver
+github.com/benhoyt/goawk/interp
+github.com/benhoyt/goawk/lexer
+github.com/benhoyt/goawk/parser
+# github.com/clipperhouse/displaywidth v0.11.0
+## explicit; go 1.18
+github.com/clipperhouse/displaywidth
+# github.com/clipperhouse/uax29/v2 v2.7.0
+## explicit; go 1.18
+github.com/clipperhouse/uax29/v2/graphemes
+# github.com/dustin/go-humanize v1.0.1
+## explicit; go 1.16
+github.com/dustin/go-humanize
+# github.com/fatih/color v1.19.0
+## explicit; go 1.25.0
+github.com/fatih/color
+# github.com/gdamore/encoding v1.0.1
+## explicit; go 1.9
+github.com/gdamore/encoding
+# github.com/gdamore/tcell/v3 v3.4.2
+## explicit; go 1.25.0
+github.com/gdamore/tcell/v3
+github.com/gdamore/tcell/v3/color
+github.com/gdamore/tcell/v3/internal/widthutil
+github.com/gdamore/tcell/v3/tty
+github.com/gdamore/tcell/v3/vt
+# github.com/inconshreveable/mousetrap v1.1.0
+## explicit; go 1.18
+github.com/inconshreveable/mousetrap
+# github.com/itchyny/gojq v0.12.19
+## explicit; go 1.24.0
+github.com/itchyny/gojq
+# github.com/itchyny/timefmt-go v0.1.8
+## explicit; go 1.24
+github.com/itchyny/timefmt-go
+# github.com/lucasb-eyer/go-colorful v1.4.1
+## explicit; go 1.12
+github.com/lucasb-eyer/go-colorful
+# github.com/mattn/go-colorable v0.1.15
+## explicit; go 1.18
+github.com/mattn/go-colorable
+# github.com/mattn/go-isatty v0.0.24
+## explicit; go 1.20
+github.com/mattn/go-isatty
+# github.com/spf13/cobra v1.10.2
+## explicit; go 1.15
+github.com/spf13/cobra
+# github.com/spf13/pflag v1.0.10
+## explicit; go 1.12
+github.com/spf13/pflag
+# golang.org/x/sys v0.47.0
+## explicit; go 1.25.0
+golang.org/x/sys/plan9
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+# golang.org/x/term v0.45.0
+## explicit; go 1.25.0
+golang.org/x/term
+# golang.org/x/text v0.41.0
+## explicit; go 1.25.0
+golang.org/x/text/encoding
+golang.org/x/text/encoding/internal/identifier
+golang.org/x/text/runes
+golang.org/x/text/transform
+golang.org/x/text/unicode/norm
