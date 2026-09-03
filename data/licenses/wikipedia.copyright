@@ -1,0 +1,13 @@
+Source: https://en.wikipedia.org/
+Copyright: Wikipedia contributors
+License: CC-BY-SA-4.0
+ The summaries in data/wiki.tsv.gz are the opening sentences of English
+ Wikipedia articles, used under the Creative Commons Attribution-ShareAlike
+ 4.0 International licence:
+ .
+     https://creativecommons.org/licenses/by-sa/4.0/
+ .
+ Creative Commons lists CC BY-SA 4.0 as one-way compatible with the GNU
+ General Public License version 3, under which this binary as a whole is
+ distributed. Each entry corresponds to the article of the same name on
+ en.wikipedia.org, where the authorship history can be found.

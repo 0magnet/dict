@@ -1,0 +1,20 @@
+dict — the code is MIT, but the binary as a whole is GPL-3.0-or-later,
+because GCIDE is embedded in it and GCIDE is GPL-3.0-or-later.
+
+Embedded data and its terms:
+
+  gcide      GNU Collaborative International Dictionary of English  GPL-3.0-or-later
+  wn         WordNet 3.0, Princeton University                      WordNet licence
+  foldoc     Free On-line Dictionary of Computing                   GPL
+  jargon     the Jargon File                                        see data/licenses
+  elements   the Elements database                                  see data/licenses
+  names      US census surnames (public domain), GeoNames (CC-BY 4.0),
+             Wiktionary template facts (CC BY-SA 4.0)
+  wikt       English Wiktionary                                     CC BY-SA 4.0
+  wiki       English Wikipedia                                      CC BY-SA 4.0
+  words      the American English word list from the words package
+
+Creative Commons lists CC BY-SA 4.0 as one-way compatible with GPL-3:
+https://creativecommons.org/compatiblelicenses/
+
+Run `dict licenses` to print the full notice for each.

@@ -1,0 +1,39 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: The Elements Database
+Source: https://git.alteholz.dev/alteholz/dict-elements
+
+Files: *
+Copyright: public domain
+License: public_domain
+ This is the Debian GNU/Linux prepackaged version of Jay Kominek's
+ <jkominek@miranda.org> database of information related to the elements,
+ formatted for use by The DICT Development Group's client sever software.
+ .
+ The formatting software was written by Rickard E. Faith (faith@acm.org).
+ .
+ This package was constructed by Robert D. Hilliard
+ <hilliard@debian.org> using a database file that was downloaded from
+ http://ucsub.colorado.edu/~kominek/elements/.
+ .
+ Changes:
+ * added Debian GNU/Linux package maintenance system files
+ .
+ The Elements Database is distributed with the following notice:
+ .
+ This dictionary database was created by Jay F. Kominek
+ <jkominek@miranda.org> (Feel free to send any comments, additions,
+ corrections, money to that address) It was compiled from a variety of
+ sources, and is in my opinion, a work of my own. (The only stuff that
+ was really copied verbatim was the atomic numbers and weights, please,
+ I'd like to see someone try and exert a copyright on the values of atoms.)
+ So, I place this in the public domain, if it somehow breaks, you get to
+ keep both pieces. It'd be nice if you kept the fact that I compiled the
+ information in here, but is not needed.
+ .
+ Robert D. Hilliard  <hilliard@debian.org>
+
+Files: debian/*
+Copyright: 2011-2024 Thorsten Alteholz <debian@alteholz.de>
+License: GPL-3
+ On Debian systems, the complete text of the GNU General
+ Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".

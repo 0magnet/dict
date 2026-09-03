@@ -1,0 +1,21 @@
+Source: https://en.wiktionary.org/
+Copyright: Wiktionary contributors
+License: CC-BY-SA-4.0
+ The definitions in data/wikt.tsv.gz are extracted from the English
+ Wiktionary and are used under the Creative Commons Attribution-ShareAlike
+ 4.0 International licence:
+ .
+     https://creativecommons.org/licenses/by-sa/4.0/
+ .
+ Creative Commons lists CC BY-SA 4.0 as one-way compatible with the GNU
+ General Public License version 3, under which this binary as a whole is
+ distributed:
+ .
+     https://creativecommons.org/compatiblelicenses/
+ .
+ Each entry corresponds to the page of the same name on en.wiktionary.org,
+ where the authorship history can be found.
+ .
+ The name and place facts in data/names.tsv.gz are drawn from Wiktionary
+ templates rather than prose, alongside US census data (public domain) and
+ GeoNames (CC-BY 4.0, https://www.geonames.org/).

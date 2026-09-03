@@ -1,0 +1,5 @@
+# the built binary, anchored to the repo root
+/dict
+
+# stray build output from `go build ./web/term/`
+/term
