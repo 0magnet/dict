@@ -22,7 +22,7 @@ var (
 	reTrailWS          = regexp.MustCompile(`[ \t]+\n`)
 	// Any accent escape the table above missed: keep the letter, drop the
 	// brackets and the diacritic marker, so "r[-e]" reads as "re".
-	// A parenthesised pronunciation, recognised by the syllable dot or a
+	// A parenthesised pronunciation, recognized by the syllable dot or a
 	// diacritic: "(re*sev\")". This is a spelling tool, so they are dropped.
 	rePronounce = regexp.MustCompile("\\s*\\([^()]*[*\u0101\u0113\u012b\u014d\u016b\u0103\u0115\u012d\u014f\u016d][^()]*\\)")
 	reAnyAccent = regexp.MustCompile("\\[[-=^\"'`~,.]?([a-zA-Z])\\]")

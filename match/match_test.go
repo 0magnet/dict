@@ -190,7 +190,7 @@ func BenchmarkSearch(b *testing.B) {
 	}
 }
 
-// TestEmptyQueryListsEverything pins the behaviour of the shell function this
+// TestEmptyQueryListsEverything pins the behavior of the shell function this
 // replaces: `fzf -q ""` shows the whole list, so `dict` with no query must too.
 func TestEmptyQueryListsEverything(t *testing.T) {
 	words := []string{"alpha", "beta", "gamma"}

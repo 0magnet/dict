@@ -516,7 +516,7 @@ func padVisible(s string, w int) string {
 		return s + strings.Repeat(" ", w-n)
 	}
 	// Too long: cut on rune boundaries, counting only visible runes, and
-	// close any colour left open by the cut.
+	// close any color left open by the cut.
 	var b strings.Builder
 	count := 0
 	for i := 0; i < len(s) && count < w; {
