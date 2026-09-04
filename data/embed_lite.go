@@ -16,3 +16,9 @@ var FS embed.FS
 
 // Order omits the two dictionaries this build does not carry.
 var Order = []string{"foldoc", "jargon", "elements"}
+
+// Absent names what Order drops, in the position the full build consults
+// them. A host that can fetch — the browser demo, which is served from the
+// same site as data/dictd — supplies these over HTTP so the page answers
+// the same words the installed binary does. See OpenSetRemote.
+var Absent = []string{"gcide", "wn"}

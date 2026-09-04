@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 3h5.2c.9 0 1.6.5 1.6 1.2V13c0-.7-.7-1.2-1.6-1.2H2z' fill='none' stroke='%238fc6f0' stroke-width='1.2'/%3E%3Cpath d='M14 3H8.8c-.9 0-1.6.5-1.6 1.2V13c0-.7.7-1.2 1.6-1.2H14z' fill='none' stroke='%23e8825f' stroke-width='1.2'/%3E%3C/svg%3E">
+<title>dict — how a word is spelled, and what it means</title>
+<!--
+  No page furniture. The terminal is the whole thing, and what to try is
+  already in the greeting the shell prints; a header saying it a second
+  time is a header that can disagree with the first. The repository link
+  lives in the greeting too, where it can be selected and copied like any
+  other text on a terminal.
+-->
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #10131a; }
+  /* The terminal sizes itself against its container, so that container
+     has to be the one that fills the viewport. */
+  #terminal { height: 100%; padding: 6px; box-sizing: border-box; position: relative; }
+  #boot { padding: 14px; color: #6b7280;
+          font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+<div id="terminal"><div id="boot">loading the word list…</div></div>
+<script src="wasm_exec.js"></script>
+<script>
+  const go = new Go();
+  const boot = document.getElementById("boot");
+  WebAssembly.instantiateStreaming(fetch("dict.wasm"), go.importObject)
+    .then((r) => { boot.remove(); return go.run(r.instance); })
+    .catch((e) => { boot.textContent = "failed to load: " + e; });
+</script>
+</body>
+</html>

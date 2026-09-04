@@ -3,10 +3,12 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"unicode/utf8"
 
@@ -29,7 +31,8 @@ const (
 )
 
 type ui struct {
-	tty        *os.File
+	out        io.Writer
+	size       func() (cols, rows int)
 	ix         *match.Index
 	sourceName string
 	total      int
@@ -50,30 +53,91 @@ type ui struct {
 	defTitle string   // which dictionary answered
 }
 
-// run drives the interactive search and returns the chosen word, or "" if the
-// user quit. The interface is drawn on /dev/tty so that stdout carries only
-// the result and stays usable in a pipeline.
-func runInteractive(ix *match.Index, query, source string, reverse bool, defs *dictdb.Set, showDefs bool) (string, error) {
+// openTTY returns the terminal the picker draws on, a way to ask its size, and
+// a cleanup that undoes whatever raw mode was entered. The cleanup is
+// idempotent: it runs from a defer and again from the signal handler, and
+// restoring a terminal twice must not be an error.
+//
+// Two hosts arrive here. A process has none of this supplied and opens
+// /dev/tty itself, so the terminal binary behaves exactly as it did before any
+// of this existed. A host that is not a process — the browser applet — hands
+// over a terminal it already owns, and says how to make it raw; asking termios
+// about it would fail, because in js/wasm there is nothing to ask.
+func openTTY() (io.ReadWriter, func() (int, int), func(), error) {
+	if host.TTY != nil {
+		if host.SetRaw != nil {
+			host.SetRaw(true)
+		}
+		var once sync.Once
+		cleanup := func() {
+			once.Do(func() {
+				if host.SetRaw != nil {
+					host.SetRaw(false)
+				}
+			})
+		}
+		return host.TTY, hostSize, cleanup, nil
+	}
+
 	tty, err := os.OpenFile("/dev/tty", os.O_RDWR, 0)
 	if err != nil {
-		return "", fmt.Errorf("cannot open terminal: %w", err)
+		return nil, nil, nil, fmt.Errorf("cannot open terminal: %w", err)
 	}
-	defer tty.Close()
-
 	state, err := term.MakeRaw(int(tty.Fd()))
 	if err != nil {
-		return "", fmt.Errorf("cannot set raw mode: %w", err)
+		tty.Close() //nolint:errcheck // the open succeeded; the failure to report is the raw one
+		return nil, nil, nil, fmt.Errorf("cannot set raw mode: %w", err)
+	}
+	var once sync.Once
+	cleanup := func() {
+		once.Do(func() {
+			term.Restore(int(tty.Fd()), state) //nolint:errcheck // leaving anyway
+			tty.Close()                        //nolint:errcheck // as above
+		})
+	}
+	size := func() (int, int) {
+		w, h, err := term.GetSize(int(tty.Fd()))
+		if err != nil || w <= 0 || h <= 0 {
+			return 80, 24
+		}
+		return w, h
+	}
+	return tty, size, cleanup, nil
+}
+
+// hostSize reports the size a non-process host declared. Zero means it did not
+// know, and 80x24 is the answer a terminal gives when nothing else does.
+func hostSize() (int, int) {
+	w, h := host.Width, host.Height
+	if w <= 0 {
+		w = 80
+	}
+	if h <= 0 {
+		h = 24
+	}
+	return w, h
+}
+
+// run drives the interactive search and returns the chosen word, or "" if the
+// user quit. For a process the interface is drawn on /dev/tty so that stdout
+// carries only the result and stays usable in a pipeline; a host that is not a
+// process supplies its own terminal through Host.TTY, because there is no
+// /dev/tty in js/wasm and no termios behind it.
+func runInteractive(ix *match.Index, query, source string, reverse bool, defs *dictdb.Set, showDefs bool) (string, error) {
+	tty, size, cleanup, err := openTTY()
+	if err != nil {
+		return "", err
 	}
 
 	u := &ui{
-		tty: tty, ix: ix, sourceName: filepath.Base(source), total: len(ix.Words),
+		out: tty, size: size, ix: ix, sourceName: filepath.Base(source), total: len(ix.Words),
 		query: []rune(query), reverse: reverse, defs: defs, showDefs: showDefs,
 	}
 
 	// Restore the terminal on the way out however we leave, including panics.
 	restore := func() {
 		fmt.Fprint(tty, cursorShow+altScreenOf)
-		term.Restore(int(tty.Fd()), state)
+		cleanup()
 	}
 	defer restore()
 
@@ -301,10 +365,7 @@ func (u *ui) definition(width int) []string {
 }
 
 func (u *ui) draw() {
-	w, h, err := term.GetSize(int(u.tty.Fd()))
-	if err != nil || w <= 0 || h <= 0 {
-		w, h = 80, 24
-	}
+	w, h := u.size()
 	u.cols, u.rows = w, h
 
 	listRows := u.listRows()
@@ -381,7 +442,7 @@ func (u *ui) draw() {
 		b.WriteString(prompt)
 	}
 
-	u.tty.Write(b.Bytes())
+	u.out.Write(b.Bytes()) //nolint:errcheck // a closed terminal is the caller's business
 }
 
 // renderRow draws one result, highlighting the runes the query matched.

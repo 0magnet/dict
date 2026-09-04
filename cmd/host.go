@@ -18,6 +18,9 @@ import (
 	"os"
 
 	"golang.org/x/term"
+
+	"github.com/0magnet/dict/data"
+	"github.com/0magnet/dict/dictdb"
 )
 
 // Host supplies what the command cannot discover for itself.
@@ -34,6 +37,31 @@ type Host struct {
 	// process decides this from isatty; a host that is not a process has
 	// to say.
 	Interactive bool
+
+	// TTY is the terminal the full-screen picker draws on and reads keys
+	// from. Nil means open /dev/tty, which is what a process does and
+	// what a browser cannot: there is no such file in js/wasm, and no
+	// termios behind it either.
+	TTY io.ReadWriter
+
+	// SetRaw puts TTY into raw mode — no echo, no newline translation —
+	// and back again. Nil means the process path, which asks termios
+	// directly. A browser terminal is told by its embedder instead, and
+	// for a host whose input is already raw this can stay nil.
+	SetRaw func(on bool)
+
+	// Fetch opens a dictionary this build does not embed. Nil means there
+	// is nowhere to fetch from, which is the answer for a process: it has
+	// the whole corpus already. The browser demo carries only the small
+	// dictionaries and fetches GCIDE and WordNet from the site it was
+	// served by, so that the page defines the same words this does.
+	Fetch data.Fetcher
+}
+
+// dictionaries is the lookup chain for one run: what is installed, what is
+// embedded, and — where this build embeds nothing — what the host can fetch.
+func dictionaries() *dictdb.Set {
+	return data.OpenSetRemote(data.DictdDirs, host.Fetch)
 }
 
 // host is the current host. The default is the process one, so the

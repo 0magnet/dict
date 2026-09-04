@@ -121,7 +121,7 @@ func run(cmd *cobra.Command, args []string) error {
 
 	query := strings.Join(args, " ")
 	ix := match.NewIndex(words)
-	defs := data.OpenSet(data.DictdDirs)
+	defs := dictionaries()
 
 	if opts.random || opts.randomDef {
 		return printRandom(ix, defs, query)
@@ -262,8 +262,20 @@ var sourcesCmd = &cobra.Command{
 			return err
 		}
 		printf("words       %s\n", source)
-		for _, n := range data.OpenSet(data.DictdDirs).Names() {
+		fetched := map[string]bool{}
+		if host.Fetch != nil {
+			for _, n := range data.Absent {
+				fetched[n] = true
+			}
+		}
+		for _, n := range dictionaries().Names() {
 			where := "built in"
+			if fetched[n] {
+				// Not in this binary at all: read over HTTP from the
+				// site that served the page, a chunk per lookup.
+				idx, _ := data.Paths(n)
+				where = "fetched from " + idx
+			}
 			for _, dir := range data.DictdDirs {
 				if _, err := os.Stat(filepath.Join(dir, n+".index")); err == nil {
 					where = filepath.Join(dir, n)

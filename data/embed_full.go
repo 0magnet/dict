@@ -16,3 +16,7 @@ var FS embed.FS
 // covers the modern vocabulary GCIDE predates; the rest fill in acronyms
 // and computing terms that neither general dictionary carries.
 var Order = []string{"gcide", "wn", "foldoc", "jargon", "elements"}
+
+// Absent is empty: this build carries everything, so there is nothing for a
+// remote host to supply.
+var Absent []string

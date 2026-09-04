@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"os"
+	"io"
 	"time"
 	"unicode/utf8"
 )
@@ -40,7 +40,7 @@ type keyReader struct {
 	errc chan error
 }
 
-func newKeyReader(f *os.File) *keyReader {
+func newKeyReader(f io.Reader) *keyReader {
 	kr := &keyReader{ch: make(chan byte, 256), errc: make(chan error, 1)}
 	go func() {
 		buf := make([]byte, 256)

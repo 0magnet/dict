@@ -8,10 +8,14 @@
 // arrives without anything being installed or fetched. A search box
 // would demonstrate a search box.
 //
-// This build carries the small half of the corpus (see the dictlite tag
-// in package data). The full one is 34.8 MB, most of it GCIDE and
-// WordNet, which is the right trade for a binary you install once and
-// the wrong one for a page someone is deciding whether to care about.
+// This build embeds the small half of the corpus (see the dictlite tag in
+// package data): the full word list and the three specialist
+// dictionaries. GCIDE and WordNet are the other 24.7 MB, which is the
+// right trade for a binary installed once and the wrong one for a page
+// someone is deciding whether to care about — so they are not embedded,
+// they are served beside the page and read a dictzip chunk at a time.
+// See web/fetch. The page therefore answers the same words as the
+// installed binary while downloading almost none of it.
 package main
 
 import (
@@ -73,8 +77,9 @@ func greeting() string {
 		"  dict -R             a random word\r\n" +
 		"  dict --help         everything else\r\n" +
 		"\r\n" +
-		"this page carries FOLDOC, Jargon and Elements plus the full word\r\n" +
-		"list; the installed binary also has Webster's 1913 and WordNet.\r\n" +
+		"the full word list and FOLDOC, Jargon and Elements are in the page;\r\n" +
+		"Webster's 1913 and WordNet are 24.7 MB, so a definition fetches the\r\n" +
+		"one chunk it needs. Same answers as the installed binary.\r\n" +
 		"github.com/0magnet/dict\r\n"
 }
 

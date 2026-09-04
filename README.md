@@ -2,9 +2,9 @@
 
 Spell-check and dictionary lookup in the terminal, with Webster's 1913, WordNet, Wiktionary and Wikipedia built in.
 
-**[Live demo](https://0magnet.github.io/dict/)** — the whole lookup as a wasm terminal, word list and dictionaries embedded in the page.
+**[Live demo](https://0magnet.github.io/dict/)** — the whole thing as a wasm terminal, interactive picker included, answering the same words as the installed binary.
 
-![dict in the browser](docs/dict-demo.png "dict finding the right spelling from a transposed pair")
+![dict in the browser](docs/dict-demo.png "the interactive picker in a browser tab, showing Webster's 1913 on a word fetched a chunk at a time")
 
 It replaces the shell function
 
@@ -71,9 +71,23 @@ rather than seconds — TinyGo's compile-time interpreter folds the embedded
 corpus on every build. A demo that is expensive to rebuild is a demo that goes
 stale, so the fast one is the committed one.
 
-The page is built with `-tags dictlite`, which carries FOLDOC, the Jargon File
-and Elements plus the full word list; the installed binary additionally has
-Webster's 1913 and WordNet.
+The page is built with `-tags dictlite`, which embeds the full word list plus
+FOLDOC, the Jargon File and Elements. Webster's 1913 and WordNet are the other
+24.7 MB and are not embedded — they are served beside the page and read over
+HTTP, one dictzip chunk at a time.
+
+That works because a `.dict.dz` is deflated in independent chunks with a table
+of where each one starts, so a definition is a ranged `GET` of about 58 KB
+rather than the whole file. Nothing is fetched until something is looked up;
+the first definition from a given dictionary also pulls its index (1.6 MB for
+GCIDE, 1.4 MB for WordNet), and after that a lookup is one chunk. `dict
+:sources` says which dictionaries were fetched and which are built in.
+
+The upshot is that the page answers the same words, from the same
+dictionaries, in the same order as the installed binary, having downloaded
+almost none of the corpus. GitHub Pages serves the repository root so that
+`data/dictd/` is reachable from the page; that is why `index.html` lives at
+the top level.
 
 ## Licences
 

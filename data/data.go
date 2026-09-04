@@ -137,6 +137,66 @@ func openSet(dirs []string, exclude string) *dictdb.Set {
 	return s
 }
 
+// Fetcher opens a dictionary this build does not embed. index is the
+// gzipped .index path and body the .dict.dz path, both relative to
+// wherever the caller serves data/ from; the body is read through an
+// io.ReaderAt so a lookup pulls one dictzip chunk rather than the file.
+type Fetcher func(name, index, body string) (dictdb.Dictionary, error)
+
+// OpenSetRemote is OpenSet with the dictionaries this build does not carry
+// fetched instead of embedded, each in the position the full build consults
+// it. The browser demo uses this: GCIDE and WordNet are 24.7 MB, too much to
+// put in a page, but they are served beside it and dictzip means a lookup
+// costs one chunk. The result answers the same words in the same order as
+// the installed binary.
+//
+// fetch may be nil, in which case this is exactly OpenSet.
+func OpenSetRemote(dirs []string, fetch Fetcher) *dictdb.Set {
+	if fetch == nil || len(Absent) == 0 {
+		return OpenSet(dirs)
+	}
+	absent := make(map[string]bool, len(Absent))
+	for _, n := range Absent {
+		absent[n] = true
+	}
+
+	s := &dictdb.Set{}
+	for _, name := range FullOrder() {
+		if absent[name] {
+			n := name
+			idx, body := Paths(n)
+			s.Add(n, func() (dictdb.Dictionary, error) { return fetch(n, idx, body) })
+			continue
+		}
+		installed := false
+		for _, dir := range dirs {
+			if err := s.AddDir(dir, name); err == nil {
+				installed = true
+				break
+			}
+		}
+		if !installed {
+			idx, body := Paths(name)
+			s.AddFS(FS, name, idx, body)
+		}
+	}
+	addGloss(s, GlossName, GlossTitle, GlossPath)
+	addGloss(s, WiktName, WiktTitle, WiktPath)
+	addGloss(s, WikiName, WikiTitle, WikiPath)
+	return s
+}
+
+// FullOrder is the consultation order of the complete corpus, whether or not
+// this build embeds all of it. Order is what is present; this is what should
+// be asked, and the two differ only in the lite build.
+func FullOrder() []string {
+	if len(Absent) == 0 {
+		return Order
+	}
+	// Absent names the dictionaries the full build asks first, so they lead.
+	return append(append([]string{}, Absent...), Order...)
+}
+
 func addGloss(s *dictdb.Set, name, title, path string) {
 	s.Add(name, func() (dictdb.Dictionary, error) {
 		f, err := FS.Open(path)
