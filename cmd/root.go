@@ -290,7 +290,7 @@ var sourcesCmd = &cobra.Command{
 
 var licensesCmd = &cobra.Command{
 	Use:   ":licenses",
-	Short: "print the licences of the built-in dictionaries",
+	Short: "print the licenses of the built-in dictionaries",
 	Args:  cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		lics, err := data.Licenses()

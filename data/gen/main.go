@@ -170,7 +170,7 @@ func main() {
 	writeGloss(wiktPath, defs)
 
 	// Whatever Wiktionary has no page for is largely brands, companies and
-	// people, which is what an encyclopaedia is for.
+	// people, which is what an encyclopedia is for.
 	var last []string
 	for _, w := range rest {
 		if len(defs[strings.ToLower(w)]) == 0 {

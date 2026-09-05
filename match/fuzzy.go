@@ -3,7 +3,7 @@ package match
 import "unicode"
 
 // Scoring constants and the bonus model are taken from fzf's algo.go, so that
-// for the queries fzf handles well the ordering here stays recognisable.
+// for the queries fzf handles well the ordering here stays recognizable.
 const (
 	scoreMatch        = 16
 	scoreGapStart     = -3
@@ -155,7 +155,7 @@ func score1(text, query []rune, start, end int, eq func(a, b rune) bool, positio
 				firstBonus = bonus
 			} else {
 				// A run of consecutive matches keeps the strongest bonus seen
-				// at its head, so "rec" in "receive" is not penalised for the
+				// at its head, so "rec" in "receive" is not penalized for the
 				// weak bonuses on 'e' and 'c'.
 				if bonus >= bonusBoundary && bonus > firstBonus {
 					firstBonus = bonus

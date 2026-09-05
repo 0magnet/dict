@@ -48,7 +48,7 @@ dict [query] [flags]
 
 Three subcommands report on the data rather than search it: `:languages` lists
 other-language word lists installed on the system, `:sources` shows which word
-list and dictionaries are in use, and `:licenses` prints the licences of the
+list and dictionaries are in use, and `:licenses` prints the licenses of the
 built-in dictionaries.
 
 ## Install
@@ -89,9 +89,9 @@ almost none of the corpus. GitHub Pages serves the repository root so that
 `data/dictd/` is reachable from the page; that is why `index.html` lives at
 the top level.
 
-## Licences
+## Licenses
 
-The code is MIT. The bundled dictionaries are not — each keeps its own licence,
+The code is MIT. The bundled dictionaries are not — each keeps its own license,
 and `dict :licenses` prints them. See `NOTICE` and `data/licenses/`.
 
 ## Dependency Graph

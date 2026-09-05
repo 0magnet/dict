@@ -64,7 +64,7 @@ func fetchWikipedia(words []string) map[string]string {
 			out[k] = v
 		}
 		if (i/extractsPerQuery)%20 == 0 {
-			fmt.Fprintf(os.Stderr, "  wikipedia %d/%d words, %d summarised so far\n", end, len(words), len(out))
+			fmt.Fprintf(os.Stderr, "  wikipedia %d/%d words, %d summarized so far\n", end, len(words), len(out))
 		}
 		sleepPolite()
 	}
@@ -95,7 +95,7 @@ func queryExtracts(client *http.Client, titles []string) (map[string]string, err
 	}
 
 	// A query for "Zyrtec" comes back as "Cetirizine", so the redirect and
-	// normalisation chains have to be walked to match a result to its word.
+	// normalization chains have to be walked to match a result to its word.
 	hop := map[string]string{}
 	for _, n := range r.Query.Normalized {
 		hop[n.From] = n.To

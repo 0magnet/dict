@@ -65,6 +65,18 @@ linters:
       - builtin$
       - examples$
     rules:
+      # Misspellings are this program's subject matter. The corpus is a list of
+      # commonly misspelled words paired with what was meant; the worked
+      # examples in the help and the package comments are all built on
+      # "recieve", which is the transposition that defeats a subsequence match
+      # and is the reason the edit-distance path exists. Correcting any of them
+      # would delete what the code is demonstrating.
+      #
+      # Scoped to these files rather than turned off, so ordinary prose
+      # elsewhere in the repository is still checked.
+      - linters:
+          - misspell
+        path: (match/.*_test\.go|match/edit\.go|match/rank\.go|match/fuzzy\.go|cmd/root\.go|cmd/root_test\.go|main\.go)$
       # The staticcheck suggestions skywire turns off. They are style
       # preferences rather than defects, and the point of copying this file is
       # that the same code passes in both places.

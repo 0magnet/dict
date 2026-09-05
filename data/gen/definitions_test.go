@@ -4,7 +4,7 @@ import "testing"
 
 // Each case is wikitext taken verbatim from the page named, so a change to the
 // parser is checked against what Wiktionary actually writes rather than an
-// idealised version of it.
+// idealized version of it.
 func TestParseDefinitions(t *testing.T) {
 	cases := []struct {
 		name string

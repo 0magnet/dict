@@ -465,7 +465,7 @@ func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 		if i >= budget {
 			break
 		}
-		// Recolouring inside a reverse-video row would fight with it, so
+		// Recoloring inside a reverse-video row would fight with it, so
 		// matched runes are only highlighted on unselected rows.
 		if hit[i] && !selected {
 			b.WriteString(sgrMatch)

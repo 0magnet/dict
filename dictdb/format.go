@@ -30,7 +30,7 @@ var (
 
 // accents maps GCIDE's bracketed letter escapes onto real characters. The
 // list covers what actually appears in etymologies and pronunciations; an
-// unrecognised escape falls back to its bare letter rather than being shown
+// unrecognized escape falls back to its bare letter rather than being shown
 // as brackets.
 var accents = strings.NewReplacer(
 	"[=a]", "ā", "[=e]", "ē", "[=i]", "ī", "[=o]", "ō", "[=u]", "ū", "[=y]", "ȳ",
