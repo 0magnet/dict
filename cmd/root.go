@@ -9,8 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/0magnet/calvin"
-	cc "github.com/0magnet/coloredcobra"
+	"github.com/0magnet/calvin/clihelp"
 	"github.com/0magnet/dict/data"
 	"github.com/0magnet/dict/dictdb"
 	"github.com/0magnet/dict/match"
@@ -47,8 +46,7 @@ func (exitNoSelection) Error() string { return "no selection" }
 var RootCmd = &cobra.Command{
 	Use:   "dict [query]",
 	Short: "look up how a word is spelled, and what it means",
-	Long: calvin.AsciiFont("dict") + "\n" +
-		"look up how a word is spelled, and what it means.\n" +
+	Long: "look up how a word is spelled, and what it means.\n" +
 		"the word list and all eight dictionaries are built into this binary;\n" +
 		"nothing needs to be installed.",
 	Example: "  dict recieve          search interactively, starting from a misspelling\n" +
@@ -66,18 +64,6 @@ var RootCmd = &cobra.Command{
 
 // Execute executes the root cli command
 func Execute() error {
-	cc.Init(&cc.Config{
-		RootCmd:         RootCmd,
-		Headings:        cc.HiBlue + cc.Bold,
-		Commands:        cc.HiBlue + cc.Bold,
-		CmdShortDescr:   cc.HiBlue,
-		Example:         cc.HiBlue + cc.Italic,
-		ExecName:        cc.HiBlue + cc.Bold,
-		Flags:           cc.HiBlue + cc.Bold,
-		FlagsDescr:      cc.HiBlue,
-		NoExtraNewlines: true,
-		NoBottomNewline: true,
-	})
 	err := RootCmd.Execute()
 	if _, ok := err.(exitNoSelection); ok {
 		os.Exit(1)
@@ -103,11 +89,8 @@ func init() {
 	RootCmd.SetVersionTemplate("dict {{.Version}}\n")
 	RootCmd.CompletionOptions.DisableDefaultCmd = true
 
-	var helpflag bool
-	RootCmd.SetUsageTemplate(help)
-	RootCmd.PersistentFlags().BoolVarP(&helpflag, "help", "h", false, "help for "+RootCmd.Use)
 	RootCmd.SetHelpCommand(&cobra.Command{Hidden: true})
-	RootCmd.PersistentFlags().MarkHidden("help") //nolint
+	clihelp.Init(RootCmd, "dict", true)
 }
 
 func run(cmd *cobra.Command, args []string) error {
@@ -421,12 +404,3 @@ func pickUnseen(n int, seen map[int]bool) int {
 	}
 	return -1
 }
-
-const help = "{{if .HasAvailableSubCommands}}{{end}} {{if gt (len .Aliases) 0}}\r\n\r\n" +
-	"{{.NameAndAliases}}{{end}}{{if .HasAvailableSubCommands}}" +
-	"Available Commands:{{range .Commands}}  {{if and (ne .Name \"completion\") .IsAvailableCommand}}\r\n  " +
-	"{{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}\r\n\r\n" +
-	"Flags:\r\n" +
-	"{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}\r\n\r\n" +
-	"Global Flags:\r\n" +
-	"{{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}\r\n\r\n"

@@ -3,12 +3,10 @@
 github.com/0magnet/afero
 github.com/0magnet/afero/internal/common
 github.com/0magnet/afero/mem
-# github.com/0magnet/calvin v0.0.0-20260907164811-60c88e364a88
+# github.com/0magnet/calvin v0.0.0-20260907210123-dae85c0a2531
 ## explicit; go 1.25.0
 github.com/0magnet/calvin
-# github.com/0magnet/coloredcobra v1.0.3
-## explicit; go 1.25.0
-github.com/0magnet/coloredcobra
+github.com/0magnet/calvin/clihelp
 # github.com/0magnet/sh/v3 v3.13.2-0.20260818190530-13d0024da85c
 ## explicit; go 1.25.0
 github.com/0magnet/sh/v3/expand
@@ -51,9 +49,6 @@ github.com/clipperhouse/uax29/v2/graphemes
 # github.com/dustin/go-humanize v1.0.1
 ## explicit; go 1.16
 github.com/dustin/go-humanize
-# github.com/fatih/color v1.19.0
-## explicit; go 1.25.0
-github.com/fatih/color
 # github.com/gdamore/encoding v1.0.1
 ## explicit; go 1.9
 github.com/gdamore/encoding
@@ -76,9 +71,6 @@ github.com/itchyny/timefmt-go
 # github.com/lucasb-eyer/go-colorful v1.4.1
 ## explicit; go 1.12
 github.com/lucasb-eyer/go-colorful
-# github.com/mattn/go-colorable v0.1.15
-## explicit; go 1.18
-github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.24
 ## explicit; go 1.20
 github.com/mattn/go-isatty
