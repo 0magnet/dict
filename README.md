@@ -2,7 +2,7 @@
 
 Spell-check and dictionary lookup in the terminal, with Webster's 1913, WordNet, Wiktionary and Wikipedia built in.
 
-**[Live demo](https://0magnet.github.io/dict/)** — the whole thing as a wasm terminal, interactive picker included, answering the same words as the installed binary.
+**[Live demo](https://dict.magnetosphere.net/)** — the whole thing as a wasm terminal, interactive picker included, answering the same words as the installed binary.
 
 ![dict in the browser](docs/dict-demo.png "the interactive picker in a browser tab, showing Webster's 1913 on a word fetched a chunk at a time")
 
