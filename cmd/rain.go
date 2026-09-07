@@ -11,8 +11,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/gdamore/tcell/v3"
-
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 
@@ -147,7 +145,7 @@ func init() {
 // differs is only who drives the clock — Advance for a still, the canvas
 // frame loop here.
 func runRainTUI(gap int, speed float64, glow bool, seed int64) error {
-	screen, err := tcell.NewScreen()
+	screen, err := newRainScreen(host)
 	if err != nil {
 		return err
 	}
