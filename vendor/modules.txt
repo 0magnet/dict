@@ -15,7 +15,7 @@ github.com/0magnet/sh/v3/internal
 github.com/0magnet/sh/v3/interp
 github.com/0magnet/sh/v3/pattern
 github.com/0magnet/sh/v3/syntax
-# github.com/0magnet/termanim v0.0.0-20260908180314-fe9fec6c934e
+# github.com/0magnet/termanim v0.0.0-20260908184637-fa4618403fe1
 ## explicit; go 1.26.0
 github.com/0magnet/termanim/canvas
 github.com/0magnet/termanim/matrix
@@ -23,7 +23,7 @@ github.com/0magnet/termanim/matrix/backdrop
 # github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d
 ## explicit; go 1.26.0
 github.com/0magnet/u-root/pkg/ls
-# github.com/0magnet/websh v0.0.0-20260908180323-42bb06485995
+# github.com/0magnet/websh v0.0.0-20260908184825-10432f75b8da
 ## explicit; go 1.26.0
 github.com/0magnet/websh/shell
 github.com/0magnet/websh/shell/browser
