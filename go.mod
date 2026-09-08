@@ -1,17 +1,17 @@
 module github.com/0magnet/dict
 
-go 1.25.7
+go 1.26.0
 
 require (
 	github.com/0magnet/afero v1.15.1-0.20260816202415-9f9d46a34dcd
-	github.com/0magnet/calvin v0.0.0-20260907210123-dae85c0a2531
+	github.com/0magnet/calvin v0.0.0-20260908144219-7385103470d9
 	github.com/0magnet/sh/v3 v3.13.2-0.20260818190530-13d0024da85c
-	github.com/0magnet/termanim v0.0.0-20260907160035-43b5e3d1c5a0
+	github.com/0magnet/termanim v0.0.0-20260908180314-fe9fec6c934e
 	github.com/0magnet/websh v0.0.0-20260903023334-1f972db1b545
 	github.com/gdamore/tcell/v3 v3.4.2
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
-	golang.org/x/term v0.45.0
+	golang.org/x/term v0.46.0
 )
 
 require (
@@ -27,6 +27,6 @@ require (
 	github.com/itchyny/timefmt-go v0.1.8 // indirect
 	github.com/lucasb-eyer/go-colorful v1.4.1 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
-	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 )
