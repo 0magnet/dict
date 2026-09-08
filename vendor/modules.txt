@@ -1,14 +1,14 @@
-# github.com/0magnet/afero v1.15.1-0.20260816202415-9f9d46a34dcd
-## explicit; go 1.25.0
+# github.com/0magnet/afero v1.15.1-0.20260908180037-e149838f49bc
+## explicit; go 1.26.0
 github.com/0magnet/afero
 github.com/0magnet/afero/internal/common
 github.com/0magnet/afero/mem
-# github.com/0magnet/calvin v0.0.0-20260908144219-7385103470d9
-## explicit; go 1.25.0
+# github.com/0magnet/calvin v0.0.0-20260908180241-0893f4bff56a
+## explicit; go 1.26.0
 github.com/0magnet/calvin
 github.com/0magnet/calvin/clihelp
-# github.com/0magnet/sh/v3 v3.13.2-0.20260818190530-13d0024da85c
-## explicit; go 1.25.0
+# github.com/0magnet/sh/v3 v3.13.2-0.20260908180147-cd87da5aad6a
+## explicit; go 1.26.0
 github.com/0magnet/sh/v3/expand
 github.com/0magnet/sh/v3/fileutil
 github.com/0magnet/sh/v3/internal
@@ -20,15 +20,15 @@ github.com/0magnet/sh/v3/syntax
 github.com/0magnet/termanim/canvas
 github.com/0magnet/termanim/matrix
 github.com/0magnet/termanim/matrix/backdrop
-# github.com/0magnet/u-root v0.16.1-0.20260814161052-156e0b67262b
-## explicit; go 1.25.7
+# github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d
+## explicit; go 1.26.0
 github.com/0magnet/u-root/pkg/ls
-# github.com/0magnet/websh v0.0.0-20260903023334-1f972db1b545
-## explicit; go 1.25.7
+# github.com/0magnet/websh v0.0.0-20260908180323-42bb06485995
+## explicit; go 1.26.0
 github.com/0magnet/websh/shell
 github.com/0magnet/websh/shell/browser
 github.com/0magnet/websh/web
-# github.com/0magnet/xterm-go v0.0.0-20260903022452-f823b747bcfe
+# github.com/0magnet/xterm-go v0.0.0-20260908011048-6bbc23473554
 ## explicit; go 1.24
 github.com/0magnet/xterm-go
 github.com/0magnet/xterm-go/vt
