@@ -6,8 +6,8 @@ require (
 	github.com/0magnet/afero v1.15.1-0.20260908180037-e149838f49bc
 	github.com/0magnet/calvin v0.0.0-20260908180241-0893f4bff56a
 	github.com/0magnet/sh/v3 v3.13.2-0.20260908180147-cd87da5aad6a
-	github.com/0magnet/termanim v0.0.0-20260908184637-fa4618403fe1
-	github.com/0magnet/websh v0.0.0-20260908184825-10432f75b8da
+	github.com/0magnet/termanim v0.0.0-20260908211604-399e16bb92f6
+	github.com/0magnet/websh v0.0.0-20260909095802-ace31d005a7e
 	github.com/gdamore/tcell/v3 v3.4.2
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
@@ -16,7 +16,7 @@ require (
 
 require (
 	github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d // indirect
-	github.com/0magnet/xterm-go v0.0.0-20260908011048-6bbc23473554 // indirect
+	github.com/0magnet/xterm-go v0.0.0-20260908200322-79e29f0f6b91 // indirect
 	github.com/benhoyt/goawk v1.31.0 // indirect
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
