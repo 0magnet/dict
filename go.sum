@@ -8,10 +8,10 @@ github.com/0magnet/termanim v0.0.0-20260908211604-399e16bb92f6 h1:MNwmrK084h1w9y
 github.com/0magnet/termanim v0.0.0-20260908211604-399e16bb92f6/go.mod h1:+onWL0kYoZ0M0DnO7pXaN0aGeq7KRwXWQf+9vxgiKYY=
 github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d h1:zLUW8axnE6LsLz1Kt5ne06nYw094U6qC68DClAgGrX8=
 github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d/go.mod h1:YBQz88D4gXBLb9++oXsiZZjfbtRC0bp4c2pduFOyZts=
-github.com/0magnet/websh v0.0.0-20260909095802-ace31d005a7e h1:kGMp4Xzf2kGx2DChvxP4p35b5BfEK2UbZb2pR47kCtE=
-github.com/0magnet/websh v0.0.0-20260909095802-ace31d005a7e/go.mod h1:640gH7SyZgNkxHzywri4JyRSRqKy2pawnHaEb5W0rtk=
-github.com/0magnet/xterm-go v0.0.0-20260908200322-79e29f0f6b91 h1:53LkCnI1Bgv2wthedhTB/9CyH14rL8+NKVgniAQgjbM=
-github.com/0magnet/xterm-go v0.0.0-20260908200322-79e29f0f6b91/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
+github.com/0magnet/websh v0.0.0-20260910095218-3d6d74ccedfc h1:30xvuSwuhrbGdY7GszBkQfbhyy5uN+Xqga6TtLB6OS4=
+github.com/0magnet/websh v0.0.0-20260910095218-3d6d74ccedfc/go.mod h1:9VdrB3ebbb6bQLciQzs5ywnLdpzURkyyqAA+j25Zvf8=
+github.com/0magnet/xterm-go v0.0.0-20260910002153-8f449d30e0f4 h1:n28yCu7bnLCMQ98B4EHMKpaCc1Tl91um90aEFpenx0I=
+github.com/0magnet/xterm-go v0.0.0-20260910002153-8f449d30e0f4/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
 github.com/benhoyt/goawk v1.31.0 h1:TSdLys1rAWvmb3befdmLYpaHZbTrYtS+JkBWRcNsMNM=
 github.com/benhoyt/goawk v1.31.0/go.mod h1:jXTQxBxtQ0VsjFqc8dw7tIJj3SDzQN8kcdMq7r83/ZA=
 github.com/clipperhouse/displaywidth v0.11.0 h1:lBc6kY44VFw+TDx4I8opi/EtL9m20WSEFgwIwO+UVM8=

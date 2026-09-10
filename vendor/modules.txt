@@ -23,12 +23,12 @@ github.com/0magnet/termanim/matrix/backdrop
 # github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d
 ## explicit; go 1.26.0
 github.com/0magnet/u-root/pkg/ls
-# github.com/0magnet/websh v0.0.0-20260909095802-ace31d005a7e
+# github.com/0magnet/websh v0.0.0-20260910095218-3d6d74ccedfc
 ## explicit; go 1.26.0
 github.com/0magnet/websh/shell
 github.com/0magnet/websh/shell/browser
 github.com/0magnet/websh/web
-# github.com/0magnet/xterm-go v0.0.0-20260908200322-79e29f0f6b91
+# github.com/0magnet/xterm-go v0.0.0-20260910002153-8f449d30e0f4
 ## explicit; go 1.24
 github.com/0magnet/xterm-go
 github.com/0magnet/xterm-go/vt
