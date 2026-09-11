@@ -7,7 +7,7 @@ require (
 	github.com/0magnet/calvin v0.0.0-20260908180241-0893f4bff56a
 	github.com/0magnet/sh/v3 v3.13.2-0.20260908180147-cd87da5aad6a
 	github.com/0magnet/termanim v0.0.0-20260908211604-399e16bb92f6
-	github.com/0magnet/websh v0.0.0-20260910095218-3d6d74ccedfc
+	github.com/0magnet/websh v0.0.0-20260910095512-6bcad1d93e01
 	github.com/gdamore/tcell/v3 v3.4.2
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
