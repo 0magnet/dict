@@ -6,7 +6,7 @@ require (
 	github.com/0magnet/afero v1.15.1-0.20260908180037-e149838f49bc
 	github.com/0magnet/calvin v0.0.0-20260908180241-0893f4bff56a
 	github.com/0magnet/sh/v3 v3.13.2-0.20260908180147-cd87da5aad6a
-	github.com/0magnet/termanim v0.0.0-20260912092751-2d3151f78a72
+	github.com/0magnet/termanim v0.0.0-20260912180616-5fa253f0fdbd
 	github.com/0magnet/websh v0.0.0-20260910095512-6bcad1d93e01
 	github.com/gdamore/tcell/v3 v3.5.0
 	github.com/spf13/cobra v1.10.2
