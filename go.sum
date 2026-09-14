@@ -8,8 +8,8 @@ github.com/0magnet/termanim v0.0.0-20260914104740-c2d1737f7963 h1:qMGz7/l1zKhJk2
 github.com/0magnet/termanim v0.0.0-20260914104740-c2d1737f7963/go.mod h1:gBD3xdF/waL0X0BB0Ow9BvP5O+PFbUgKg6bYPlHknxQ=
 github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d h1:zLUW8axnE6LsLz1Kt5ne06nYw094U6qC68DClAgGrX8=
 github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d/go.mod h1:YBQz88D4gXBLb9++oXsiZZjfbtRC0bp4c2pduFOyZts=
-github.com/0magnet/websh v0.0.0-20260914105002-5312a522f117 h1:eh1DISWcx4cGkgQePqmlTK+wtpu2cr3MIOHseqD3660=
-github.com/0magnet/websh v0.0.0-20260914105002-5312a522f117/go.mod h1:pkr2qkufmar+sR8zZPFxsGKCKzRluhkWeim9iyEkmmM=
+github.com/0magnet/websh v0.0.0-20260914105251-9f3f0b910116 h1:cnogw0gosbEAXxcbzgSPIFCCoyqm6EMsBIgnwlNa4Sw=
+github.com/0magnet/websh v0.0.0-20260914105251-9f3f0b910116/go.mod h1:pkr2qkufmar+sR8zZPFxsGKCKzRluhkWeim9iyEkmmM=
 github.com/0magnet/xterm-go v0.0.0-20260913215439-50280f9bd203 h1:7gcGJn40OsCzIBMM+MD3NeJAWmBMcnSTKTlYD1V3gu4=
 github.com/0magnet/xterm-go v0.0.0-20260913215439-50280f9bd203/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
 github.com/benhoyt/goawk v1.31.0 h1:TSdLys1rAWvmb3befdmLYpaHZbTrYtS+JkBWRcNsMNM=
