@@ -3,7 +3,7 @@
 github.com/0magnet/afero
 github.com/0magnet/afero/internal/common
 github.com/0magnet/afero/mem
-# github.com/0magnet/calvin v0.0.0-20260913215348-2de0c1f412b3
+# github.com/0magnet/calvin v0.0.0-20260915170035-09af7075474e
 ## explicit; go 1.26.0
 github.com/0magnet/calvin
 github.com/0magnet/calvin/clihelp
@@ -15,7 +15,7 @@ github.com/0magnet/sh/v3/internal
 github.com/0magnet/sh/v3/interp
 github.com/0magnet/sh/v3/pattern
 github.com/0magnet/sh/v3/syntax
-# github.com/0magnet/termanim v0.0.0-20260914104740-c2d1737f7963
+# github.com/0magnet/termanim v0.0.0-20260916100333-d501f348ee17
 ## explicit; go 1.26.0
 github.com/0magnet/termanim/canvas
 github.com/0magnet/termanim/matrix
@@ -23,16 +23,16 @@ github.com/0magnet/termanim/matrix/backdrop
 # github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d
 ## explicit; go 1.26.0
 github.com/0magnet/u-root/pkg/ls
-# github.com/0magnet/websh v0.0.0-20260914105251-9f3f0b910116
+# github.com/0magnet/websh v0.0.0-20260916100640-e79baee36b7f
 ## explicit; go 1.26.0
 github.com/0magnet/websh/shell
 github.com/0magnet/websh/shell/browser
 github.com/0magnet/websh/web
-# github.com/0magnet/xterm-go v0.0.0-20260913215439-50280f9bd203
+# github.com/0magnet/xterm-go v0.0.0-20260915170035-1ea079f51d60
 ## explicit; go 1.24
 github.com/0magnet/xterm-go
 github.com/0magnet/xterm-go/vt
-# github.com/benhoyt/goawk v1.31.0
+# github.com/benhoyt/goawk v1.32.0
 ## explicit; go 1.20
 github.com/benhoyt/goawk/internal/ast
 github.com/benhoyt/goawk/internal/compiler
