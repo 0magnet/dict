@@ -15,6 +15,11 @@ var (
 	reSourceTag = regexp.MustCompile(`\[(1913 Webster[^\]]*|Webster 1913[^\]]*|PJC|AS|RH|WordNet[^\]]*|Century[^\]]*|Moby[^\]]*)\]`)
 	// Cross-references and emphasis: {Worth} -> Worth
 	reBrace = regexp.MustCompile(`\{([^{}]*)\}`)
+	// A missing space in the source: 110 entries write an alternative form as
+	// "{Roweled}or {Rowelled}", and unwrapping the braces glues that into
+	// "Roweledor". The brace is what kept the two apart, so the space has to
+	// go in before it is removed.
+	reGluedOr = regexp.MustCompile(`\}or\b`)
 	// The headword restatement that opens each entry: \Weird\ (w[=e]rd)
 	reHeadword         = regexp.MustCompile(`\\([^\\]*)\\`)
 	reBlank            = regexp.MustCompile(`\n{3,}`)
@@ -56,6 +61,7 @@ func Clean(entry string) string {
 	s = dropLeadingPronunciation(s)
 	s = rePronounce.ReplaceAllString(s, "")
 	s = reHeadword.ReplaceAllString(s, "$1")
+	s = reGluedOr.ReplaceAllString(s, "} or")
 	s = reBrace.ReplaceAllString(s, "$1")
 
 	// Any accent escape the table missed keeps its letter and loses the

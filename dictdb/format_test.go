@@ -145,3 +145,22 @@ func TestCleanRemovesEditionStampsButKeepsUsageLabels(t *testing.T) {
 		}
 	}
 }
+
+// GCIDE writes an alternative form as "{Roweled}or {Rowelled}", with no space
+// after the brace. Unwrapping the braces without putting one back glues the
+// two words together, and "Roweledor" then shows up both in the definition
+// and in anything reading the principal parts out of it.
+func TestCleanSeparatesGluedAlternatives(t *testing.T) {
+	raw := `Rowel, v. t. [imp. & p. p. {Roweled}or {Rowelled}; p. pr. & vb. n. {Roweling}or {Rowelling}.]`
+	got := Clean(raw)
+	for _, bad := range []string{"Roweledor", "Rowelingor"} {
+		if contains(got, bad) {
+			t.Errorf("%q survived: %s", bad, got)
+		}
+	}
+	for _, want := range []string{"Roweled or Rowelled", "Roweling or Rowelling"} {
+		if !contains(got, want) {
+			t.Errorf("expected %q in: %s", want, got)
+		}
+	}
+}
