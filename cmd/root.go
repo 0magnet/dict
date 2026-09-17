@@ -32,6 +32,7 @@ type options struct {
 	reverse   bool
 	random    bool
 	randomDef bool
+	pos       string
 }
 
 var opts options
@@ -82,10 +83,11 @@ func init() {
 	f.BoolVarP(&opts.defOnly, "definition-only", "D", false, "print only the definition text, with no headword or source")
 	f.BoolVarP(&opts.random, "random", "r", false, "print a random word and exit")
 	f.BoolVarP(&opts.randomDef, "random-define", "R", false, "print a random word with its definition and exit")
+	f.StringVarP(&opts.pos, "pos", "p", "", "with -r or -R, draw only a noun, verb, vt, vi, adj, adv, name, person or place")
 	f.BoolVar(&opts.noDefs, "no-defs", false, "hide the definition pane in the interactive view")
 	f.BoolVar(&opts.reverse, "reverse", false, "prompt at the top and list running down, as with fzf --layout=reverse")
 
-	RootCmd.AddCommand(languagesCmd, licensesCmd, sourcesCmd, rainCmd)
+	RootCmd.AddCommand(languagesCmd, licensesCmd, sourcesCmd, rainCmd, adlibCmd)
 	RootCmd.SetVersionTemplate("dict {{.Version}}\n")
 	RootCmd.CompletionOptions.DisableDefaultCmd = true
 
@@ -303,6 +305,10 @@ func printRandom(ix *match.Index, defs *dictdb.Set, query string) error {
 	if len(pool) == 0 {
 		return fmt.Errorf("no word matches %q", query)
 	}
+	part, err := parsePart(opts.pos)
+	if err != nil {
+		return err
+	}
 
 	count := opts.limit
 	if count < 1 {
@@ -320,6 +326,27 @@ func printRandom(ix *match.Index, defs *dictdb.Set, query string) error {
 			break
 		}
 		word := pool[i]
+
+		// Under --pos the draw is rejection sampling: look the word up, and
+		// keep it only if its entry claims the part of speech asked for. The
+		// word kept is the entry's headword, since that is what carries the
+		// part of speech -- see dictdb.Headword.
+		if part != "" {
+			tag, ok := defs.Tagged(word)
+			if !ok || !tag.Has(part) {
+				if len(seen) >= len(pool) {
+					return fmt.Errorf("nothing in that set is a %s", part)
+				}
+				continue
+			}
+			word = tag.Word
+			// A name is printed the way it is spelled: "Gaborone", not
+			// "gaborone". Every lookup downstream lower-cases what it is
+			// given, so the capital costs nothing.
+			if tag.Display != "" {
+				word = tag.Display
+			}
+		}
 
 		if !opts.randomDef {
 			println(word)
