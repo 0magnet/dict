@@ -7,7 +7,7 @@ require (
 	github.com/0magnet/calvin v0.0.0-20260915170035-09af7075474e
 	github.com/0magnet/sh/v3 v3.13.2-0.20260908180147-cd87da5aad6a
 	github.com/0magnet/termanim v0.0.0-20260916100333-d501f348ee17
-	github.com/0magnet/websh v0.0.0-20260916100931-8694a72a6d94
+	github.com/0magnet/websh v0.0.0-20260918095400-01adea695972
 	github.com/gdamore/tcell/v3 v3.5.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
@@ -16,11 +16,11 @@ require (
 
 require (
 	github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d // indirect
-	github.com/0magnet/xterm-go v0.0.0-20260915170035-1ea079f51d60 // indirect
+	github.com/0magnet/xterm-go v0.0.0-20260918025541-d7185c9db583 // indirect
 	github.com/benhoyt/goawk v1.32.0 // indirect
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
-	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/dustin/go-humanize v1.1.0 // indirect
 	github.com/gdamore/encoding v1.0.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/itchyny/gojq v0.12.19 // indirect

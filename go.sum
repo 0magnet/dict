@@ -8,10 +8,10 @@ github.com/0magnet/termanim v0.0.0-20260916100333-d501f348ee17 h1:haAs+7Tb5q91PJ
 github.com/0magnet/termanim v0.0.0-20260916100333-d501f348ee17/go.mod h1:MYXXCesDzLpSA5ULDgbrzOq+I5tIdSzfJiwa5s6qXYA=
 github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d h1:zLUW8axnE6LsLz1Kt5ne06nYw094U6qC68DClAgGrX8=
 github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d/go.mod h1:YBQz88D4gXBLb9++oXsiZZjfbtRC0bp4c2pduFOyZts=
-github.com/0magnet/websh v0.0.0-20260916100931-8694a72a6d94 h1:9qn2es8rsE84PjrD7nuE4gvDVX3VC65H3TfJzKUnBEg=
-github.com/0magnet/websh v0.0.0-20260916100931-8694a72a6d94/go.mod h1:JX/BsnB+yDHFNVlaFzOB2/GxYK/ExA7oT9LE5gyuwb8=
-github.com/0magnet/xterm-go v0.0.0-20260915170035-1ea079f51d60 h1:Joeo8EVcjvXUvPjMqraf7qu+ucd8Rl9RtEcyE+J/HjY=
-github.com/0magnet/xterm-go v0.0.0-20260915170035-1ea079f51d60/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
+github.com/0magnet/websh v0.0.0-20260918095400-01adea695972 h1:l//dajj8L0f6tHqkbKxGpWuCfMiykAwDf3MJ1lt2WN4=
+github.com/0magnet/websh v0.0.0-20260918095400-01adea695972/go.mod h1:3lS4e1DWfftTgaczoBw+2JVm+8VJdNA4Hrv4I6beKBM=
+github.com/0magnet/xterm-go v0.0.0-20260918025541-d7185c9db583 h1:y+2JEOu+n2W8+W9kxyo+/Iu1HL9peKL1ljltAPyDWhY=
+github.com/0magnet/xterm-go v0.0.0-20260918025541-d7185c9db583/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
 github.com/benhoyt/goawk v1.32.0 h1:CK/mnBxGsNqX8hdghPIctl2aGIcwfnhT6sv+9M/bY7w=
 github.com/benhoyt/goawk v1.32.0/go.mod h1:jXTQxBxtQ0VsjFqc8dw7tIJj3SDzQN8kcdMq7r83/ZA=
 github.com/clipperhouse/displaywidth v0.11.0 h1:lBc6kY44VFw+TDx4I8opi/EtL9m20WSEFgwIwO+UVM8=
@@ -21,8 +21,8 @@ github.com/clipperhouse/uax29/v2 v2.7.0/go.mod h1:EFJ2TJMRUaplDxHKj1qAEhCtQPW2tJ
 github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
 github.com/creack/pty v1.1.24 h1:bJrF4RRfyJnbTJqzRLHzcGaZK1NeM5kTC9jGgovnR1s=
 github.com/creack/pty v1.1.24/go.mod h1:08sCNb52WyoAwi2QDyzUCTgcvVFhUzewun7wtTfvcwE=
-github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkpeCY=
-github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
+github.com/dustin/go-humanize v1.1.0 h1:dbKTrvD0klcbBV/h4AWJdMuZogJACoMlvWIWZ5b2xWg=
+github.com/dustin/go-humanize v1.1.0/go.mod h1:hc1CvRkJMsgxqjmjMQF3QNRAZBwY8AXBAzKYoSX9sFI=
 github.com/gdamore/encoding v1.0.1 h1:YzKZckdBL6jVt2Gc+5p82qhrGiqMdG/eNs6Wy0u3Uhw=
 github.com/gdamore/encoding v1.0.1/go.mod h1:0Z0cMFinngz9kS1QfMjCP8TY7em3bZYeeklsSDPivEo=
 github.com/gdamore/tcell/v3 v3.5.0 h1:SCp9czLv2K2aPORgD6+4fjV0xNAzKIkiezCkp6bHLe4=
