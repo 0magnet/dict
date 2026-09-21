@@ -13,8 +13,10 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"sync"
 
 	"github.com/0magnet/dict/dictdb"
+	"github.com/0magnet/dict/unidata"
 )
 
 // Paths returns the embedded index and body paths for a dictionary.
@@ -207,3 +209,39 @@ func addGloss(s *dictdb.Set, name, title, path string) {
 		return dictdb.ReadGloss(name, title, f)
 	})
 }
+
+// UnicodePath is the embedded Unicode character database, built by
+// data/gen/unicode.
+const UnicodePath = "unicode.tsv.gz"
+
+// Unicode returns the character database: what every character is called,
+// what kind of thing it is, and which block it belongs to.
+//
+// Unlike the dictionaries it is embedded in every build, the browser demo
+// included. It is a quarter of a megabyte for the whole of Unicode, which is
+// small enough that fetching it a piece at a time would cost more in
+// round trips than it saved, and a page that can say what a character is
+// only after a download is a page that will be asked before the download
+// finishes.
+//
+// The table is parsed once and shared. Parsing is cheap but not free, and a
+// host that is not a process -- the shell in the demo page -- runs the
+// command many times in the life of one program.
+func Unicode() (*unidata.Table, error) {
+	unicodeOnce.Do(func() {
+		f, err := FS.Open(UnicodePath)
+		if err != nil {
+			unicodeErr = err
+			return
+		}
+		defer f.Close() //nolint:errcheck // read-only
+		unicodeTable, unicodeErr = unidata.Read(f)
+	})
+	return unicodeTable, unicodeErr
+}
+
+var (
+	unicodeOnce  sync.Once
+	unicodeTable *unidata.Table
+	unicodeErr   error
+)

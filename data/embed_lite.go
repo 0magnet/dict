@@ -11,7 +11,7 @@ import "embed"
 // word is spelled, and FOLDOC, Jargon and Elements tell you what a good
 // many of them mean.
 //
-//go:embed dictd/foldoc.dict.dz dictd/foldoc.index.gz dictd/jargon.dict.dz dictd/jargon.index.gz dictd/elements.dict.dz dictd/elements.index.gz words.gz names.tsv.gz wikt.tsv.gz wiki.tsv.gz licenses
+//go:embed dictd/foldoc.dict.dz dictd/foldoc.index.gz dictd/jargon.dict.dz dictd/jargon.index.gz dictd/elements.dict.dz dictd/elements.index.gz words.gz names.tsv.gz wikt.tsv.gz wiki.tsv.gz unicode.tsv.gz licenses
 var FS embed.FS
 
 // Order omits the two dictionaries this build does not carry.

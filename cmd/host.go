@@ -27,6 +27,11 @@ import (
 type Host struct {
 	Stdout io.Writer
 	Stderr io.Writer
+	// Stdin is what is piped in, which only :unicode reads: naming the
+	// characters in a stream is the one thing dict does with input rather
+	// than arguments. Nil means os.Stdin, which is what a process has and a
+	// browser applet does not.
+	Stdin io.Reader
 	// Width is the wrapping width. Zero means ask the terminal, which is
 	// what a process does and what a browser cannot.
 	Width int
@@ -72,6 +77,7 @@ func processHost() *Host {
 	return &Host{
 		Stdout:      os.Stdout,
 		Stderr:      os.Stderr,
+		Stdin:       os.Stdin,
 		Interactive: term.IsTerminal(int(os.Stdout.Fd())) && term.IsTerminal(int(os.Stdin.Fd())),
 	}
 }
@@ -89,6 +95,9 @@ func SetHost(h *Host) {
 	if h.Stderr == nil {
 		h.Stderr = os.Stderr
 	}
+	if h.Stdin == nil {
+		h.Stdin = os.Stdin
+	}
 	host = h
 }
 
@@ -105,3 +114,6 @@ func printf(format string, a ...any) {
 func println(a ...any) {
 	fmt.Fprintln(out(), a...) //nolint:errcheck // as above
 }
+
+// in is what the commands read piped input from.
+func in() io.Reader { return host.Stdin }

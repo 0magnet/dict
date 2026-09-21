@@ -46,6 +46,15 @@ func main() {
 		FS:       vfs,
 		Host:     "you@dict",
 		Greeting: greeting(),
+		// Unifont last, so that `dict :unicode` can draw what it names.
+		// It is the only font that covers Unicode, being a 16-pixel
+		// bitmap font with a glyph for nearly every assigned code point,
+		// and at the end of the stack it is reached only by characters
+		// the system monospace does not have -- which is the entire
+		// difference between a character table and a screen of boxes.
+		// The faces are declared in index.html, which also waits for
+		// them before starting this.
+		FontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace, Unifont",
 	})
 	if err != nil {
 		js.Global().Get("console").Call("error", "dict term: "+err.Error())
@@ -75,6 +84,7 @@ func greeting() string {
 		"  dict recieve        a misspelling still finds the word\r\n" +
 		"  dict -d yacc        what it means\r\n" +
 		"  dict -R             a random word\r\n" +
+		"  dict :unicode ’     what a character is, rather than a word\r\n" +
 		"  dict --help         everything else\r\n" +
 		"\r\n" +
 		"the full word list and FOLDOC, Jargon and Elements are in the page;\r\n" +

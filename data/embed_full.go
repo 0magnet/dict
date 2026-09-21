@@ -8,7 +8,7 @@ import "embed"
 // the right trade for a binary you install once and a dictionary that
 // then works with nothing else present.
 //
-//go:embed dictd/*.dict.dz dictd/*.index.gz words.gz names.tsv.gz wikt.tsv.gz wiki.tsv.gz licenses
+//go:embed dictd/*.dict.dz dictd/*.index.gz words.gz names.tsv.gz wikt.tsv.gz wiki.tsv.gz unicode.tsv.gz licenses
 var FS embed.FS
 
 // Order is the order dictionaries are consulted. GCIDE leads because its

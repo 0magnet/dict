@@ -87,7 +87,7 @@ func init() {
 	f.BoolVar(&opts.noDefs, "no-defs", false, "hide the definition pane in the interactive view")
 	f.BoolVar(&opts.reverse, "reverse", false, "prompt at the top and list running down, as with fzf --layout=reverse")
 
-	RootCmd.AddCommand(languagesCmd, licensesCmd, sourcesCmd, rainCmd, adlibCmd)
+	RootCmd.AddCommand(languagesCmd, licensesCmd, sourcesCmd, rainCmd, adlibCmd, unicodeCmd)
 	RootCmd.SetVersionTemplate("dict {{.Version}}\n")
 	RootCmd.CompletionOptions.DisableDefaultCmd = true
 
@@ -96,6 +96,17 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) error {
+	// A character is not a word. Asking what one is is the same kind of
+	// question as asking what a word means -- something is not what it looks
+	// like -- but the word list cannot answer it, so it is answered here
+	// rather than searched for and missed. See charArg for which arguments
+	// count.
+	if len(args) == 1 && !opts.random && !opts.randomDef && !opts.filter {
+		if r, ok := charArg(args[0]); ok {
+			return answerCharArg(r)
+		}
+	}
+
 	words, source, err := loadWordList(opts.wordFile, opts.lang)
 	if err != nil {
 		return err
@@ -268,6 +279,12 @@ var sourcesCmd = &cobra.Command{
 				}
 			}
 			printf("%-11s %s\n", n, where)
+		}
+		// The character table is not one of the dictionaries -- it answers
+		// what a character is, not what a word means -- but it is data this
+		// binary carries and this is where what is carried is listed.
+		if tab, err := data.Unicode(); err == nil {
+			printf("%-11s built in (Unicode %s, %d names)\n", "unicode", tab.Version(), tab.Len())
 		}
 		return nil
 	},

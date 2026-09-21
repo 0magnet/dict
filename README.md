@@ -50,7 +50,82 @@ dict [query] [flags]
 Three subcommands report on the data rather than search it: `:languages` lists
 other-language word lists installed on the system, `:sources` shows which word
 list and dictionaries are in use, and `:licenses` prints the licenses of the
-built-in dictionaries.
+built-in dictionaries. `:unicode` is below, and `:adlib` after that.
+
+## Characters
+
+A dictionary answers what a word means. `:unicode` answers what a character
+is, which turns out to be the same errand one level down: something is not
+what it appears to be, and the name is the only handle on it.
+
+```
+$ dict :unicode ’
+’  RIGHT SINGLE QUOTATION MARK
+
+code    U+2019
+utf-8   E2 80 99
+kind    punctuation, final quote
+block   General Punctuation
+```
+
+That is the whole of why it is here. A no-break space and a space are the
+same picture, an en dash and a hyphen are nearly one, and a Cyrillic `а` is an
+`a` that no search will ever find. None of it is visible; all of it is
+answerable.
+
+With nothing to say it reads standard input and names what arrives, each
+distinct character once, which is how to find out what is actually in a line
+that will not behave:
+
+```
+$ printf 'na\xc3\xafve\xc2\xa0caf\xc3\xa9' | dict :unicode
+n   U+006E   LATIN SMALL LETTER N
+a   U+0061   LATIN SMALL LETTER A
+ï   U+00EF   LATIN SMALL LETTER I WITH DIAERESIS
+v   U+0076   LATIN SMALL LETTER V
+e   U+0065   LATIN SMALL LETTER E
+    U+00A0   NO-BREAK SPACE
+c   U+0063   LATIN SMALL LETTER C
+f   U+0066   LATIN SMALL LETTER F
+é   U+00E9   LATIN SMALL LETTER E WITH ACUTE
+```
+
+Nothing it prints can act on the terminal it prints to, which is what makes
+it safe to point at a file nobody has read: a control character is shown as
+its Control Pictures glyph — `ESC` as `␛` — and a combining mark is given a
+dotted circle to sit on rather than the character before it.
+
+`-f` reads a file and `-` asks for standard input outright. The bare pipe
+above needs neither, because a process can see that its stdin is not a
+terminal; the shell in the demo page cannot, so `-` is how to say it there.
+
+An argument can also be a code point or a name, and a name is matched by the
+same tiered matcher the word list is, so half-remembering it is enough:
+
+```sh
+dict :unicode U+00A0          # a code point by number
+dict :unicode snowman         # ☃, by name
+dict :unicode "MULTIPLCATION SIGN"   # × — the misspelling still finds it
+dict :unicode -b Emoticons    # a block, listed
+dict :unicode --blocks        # the 353 block names
+```
+
+Run with no arguments on a terminal, it opens the same interactive picker the
+word list uses, over the character names; what it prints on the way out is
+the character, because knowing that the one you want is called MULTIPLICATION
+SIGN is rarely the end of the errand and having `×` is.
+
+The root command takes a character too, so the common case needs no
+subcommand at all — `dict ’` and `dict U+2019` both answer the above. Only
+two kinds of argument are read this way: a code point written out, and a
+single non-ASCII character. A lone ASCII letter stays a word, and so does
+`dict beef`, which is a valid hex number and also a thing you can eat.
+
+The whole of Unicode 18.0 is built in, as the dictionaries are: 41,293 names
+in 260 KB, nothing fetched and nothing installed. The CJK ideographs and
+Hangul syllables are not stored one by one — their names are generated from
+their code points, which is how 110,000 characters cost a dozen lines instead
+of a hundred thousand.
 
 ## Parts of speech
 
@@ -167,10 +242,28 @@ almost none of the corpus. GitHub Pages serves the repository root so that
 `data/dictd/` is reachable from the page; that is why `index.html` lives at
 the top level.
 
+The character table is the exception to all of that: it is embedded in the
+page build too, because a quarter of a megabyte would cost more in round
+trips than it saved, and because the answer to "what is this character" is
+wanted before a download finishes or not at all.
+
+What the page does have to fetch is a font. No system font covers Unicode, so
+a character table in a browser renders as a screen of empty boxes; `fonts/`
+holds GNU Unifont, which is the only font that comes close, at 892 KB for the
+Basic Multilingual Plane and 593 KB for the planes above it. It sits last in
+the terminal's font stack, so ordinary text still draws in the system
+monospace and only the characters nothing else has fall through to it, and
+the second file is declared over a `unicode-range` so a session that never
+shows an emoji never fetches it.
+
 ## Licenses
 
 The code is MIT. The bundled dictionaries are not — each keeps its own license,
 and `dict :licenses` prints them. See `NOTICE` and `data/licenses/`.
+
+The Unicode Character Database is under the Unicode license, and GNU Unifont,
+which only the demo page uses, is dual-licensed SIL OFL 1.1 and GPL-2.0-or-later
+with the font embedding exception. See `fonts/LICENSE-unifont`.
 
 ## Dependency Graph
 
@@ -196,14 +289,17 @@ gocloc --not-match-d='(vendor|node_modules|\.git)' .
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Go                              41            555            949           5042
+Go                              57            864           2019           8300
 JavaScript                       1             61             36            478
-YAML                             1              0              7             98
-Markdown                         1             23              0             58
-HTML                             1              0              7             28
+Markdown                         2             70              0            255
+YAML                             1              0             16            101
+HTML                             1              4             22             76
+Makefile                         1             12             13             35
 Bourne Shell                     1              9             30             28
-Makefile                         1              8              8             16
+JSON                             1              0              0              8
+XML                              1              0              0              4
+Plain Text                       1              1              0              3
 -------------------------------------------------------------------------------
-TOTAL                           47            656           1037           5748
+TOTAL                           67           1021           2136           9288
 -------------------------------------------------------------------------------
 ```

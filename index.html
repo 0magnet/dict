@@ -38,6 +38,27 @@
   #terminal { height: 100%; padding: 6px; box-sizing: border-box; position: relative; }
   #boot { padding: 14px; color: #6b7280;
           font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* GNU Unifont, so that `dict :unicode` can draw what it names. No system
+     font covers Unicode, and a character table that renders half its entries
+     as empty boxes is not one. It sits last in the terminal's font stack
+     (see web/term), so ordinary text still uses the system monospace and
+     only the characters nothing else has fall through to it.
+
+     The split is by plane: the second file is declared over the code points
+     above the BMP, so a page that never shows an emoji never fetches it. */
+  @font-face {
+    font-family: 'Unifont';
+    src: url('fonts/unifont.woff2') format('woff2');
+    unicode-range: U+0000-FFFF;
+    font-display: block;
+  }
+  @font-face {
+    font-family: 'Unifont';
+    src: url('fonts/unifont_upper.woff2') format('woff2');
+    unicode-range: U+10000-10FFFF;
+    font-display: block;
+  }
 </style>
 </head>
 <body>
@@ -54,8 +75,27 @@
 <script>
   const go = new Go();
   const boot = document.getElementById("boot");
-  WebAssembly.instantiateStreaming(fetch("dict.wasm"), go.importObject)
-    .then((r) => { boot.remove(); return go.run(r.instance); })
+
+  // The terminal measures its cell and rasterizes glyphs into a WebGL atlas
+  // as it draws, with no way to be told a font arrived later. A glyph drawn
+  // before Unifont loads would be cached as the fallback box it rendered as
+  // and stay a box, so both faces are asked for up front and the module
+  // starts once they are in. A sample character from each plane is passed
+  // because a `unicode-range` face is not fetched until something in its
+  // range is actually wanted.
+  //
+  // Neither font is allowed to hold up the terminal for long: if the network
+  // is having a bad day it is better to have a dictionary with some empty
+  // boxes in it than a blank page. The wasm fetch runs alongside either way.
+  const fonts = Promise.all([
+    document.fonts.load("16px Unifont", "中"),
+    document.fonts.load("16px Unifont", "\u{1f600}"),
+  ]).catch(() => {});
+  const ready = Promise.race([fonts, new Promise((r) => setTimeout(r, 4000))]);
+
+  const wasm = WebAssembly.instantiateStreaming(fetch("dict.wasm"), go.importObject);
+  Promise.all([wasm, ready])
+    .then(([r]) => { boot.remove(); return go.run(r.instance); })
     .catch((e) => { boot.textContent = "failed to load: " + e; });
 </script>
 </body>

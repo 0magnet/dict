@@ -49,6 +49,10 @@ func hostFor(s *shell.Shell, hc *interp.HandlerContext) *cmd.Host {
 		Height: rows,
 		Stdout: hc.Stdout,
 		Stderr: hc.Stderr,
+		// :unicode is the one command that reads what is piped into it,
+		// and in the page that pipe is the shell's -- there being no
+		// process to own one.
+		Stdin: hc.Stdin,
 		// GCIDE and WordNet are not in this binary; they are served
 		// beside the page, and read a chunk at a time.
 		Fetch: fetch.Dictionaries("data/"),
