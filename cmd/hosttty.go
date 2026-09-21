@@ -110,7 +110,7 @@ func (t *hostTty) WindowSize() (tcell.WindowSize, error) {
 //
 // The refusal matters. tcell keeps a read outstanding at all times, and the
 // terminal's stdin is an io.Pipe with no deadline, so a read already blocked
-// when Stop arrives cannot be cancelled — it stays parked and swallows the
+// when Stop arrives cannot be canceled — it stays parked and swallows the
 // next byte written to the pipe. That costs the first keystroke typed after
 // leaving a full-screen view. Returning an error here does not rescue that
 // one byte, but it does stop tcell issuing another read and eating a second.

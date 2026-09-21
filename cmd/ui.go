@@ -83,21 +83,21 @@ func openTTY() (io.ReadWriter, func() (int, int), func(), error) {
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("cannot open terminal: %w", err)
 	}
-	state, err := term.MakeRaw(int(tty.Fd()))
-	if err != nil {
-		tty.Close() //nolint:errcheck // the open succeeded; the failure to report is the raw one
+	state, err := term.MakeRaw(int(tty.Fd())) //nolint:staticcheck // SA4023 only under js/wasm, where termios is not there to ask
+	if err != nil {                           //nolint:staticcheck // as above
+		tty.Close() //nolint:errcheck,gosec // the open succeeded; the failure to report is the raw one
 		return nil, nil, nil, fmt.Errorf("cannot set raw mode: %w", err)
 	}
 	var once sync.Once
 	cleanup := func() {
 		once.Do(func() {
-			term.Restore(int(tty.Fd()), state) //nolint:errcheck // leaving anyway
-			tty.Close()                        //nolint:errcheck // as above
+			term.Restore(int(tty.Fd()), state) //nolint:errcheck,gosec // leaving anyway
+			tty.Close()                        //nolint:errcheck,gosec // as above
 		})
 	}
 	size := func() (int, int) {
-		w, h, err := term.GetSize(int(tty.Fd()))
-		if err != nil || w <= 0 || h <= 0 {
+		w, h, err := term.GetSize(int(tty.Fd())) //nolint:staticcheck // as above
+		if err != nil || w <= 0 || h <= 0 {      //nolint:staticcheck // as above
 			return 80, 24
 		}
 		return w, h
@@ -136,7 +136,7 @@ func runInteractive(ix *match.Index, query, source string, reverse bool, defs *d
 
 	// Restore the terminal on the way out however we leave, including panics.
 	restore := func() {
-		fmt.Fprint(tty, cursorShow+altScreenOf)
+		fmt.Fprint(tty, cursorShow+altScreenOf) //nolint:errcheck // leaving anyway
 		cleanup()
 	}
 	defer restore()
@@ -160,7 +160,7 @@ func runInteractive(ix *match.Index, query, source string, reverse bool, defs *d
 		}
 	}()
 
-	fmt.Fprint(tty, altScreenOn+cursorHide)
+	fmt.Fprint(tty, altScreenOn+cursorHide) //nolint:errcheck // as above
 
 	winch := make(chan os.Signal, 1)
 	if len(resizeSignals) > 0 {
@@ -442,7 +442,7 @@ func (u *ui) draw() {
 		b.WriteString(prompt)
 	}
 
-	u.out.Write(b.Bytes()) //nolint:errcheck // a closed terminal is the caller's business
+	u.out.Write(b.Bytes()) //nolint:errcheck,gosec // a closed terminal is the caller's business
 }
 
 // renderRow draws one result, highlighting the runes the query matched.

@@ -30,12 +30,12 @@ func Words() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck // read-only
 	zr, err := gzip.NewReader(f)
 	if err != nil {
 		return nil, fmt.Errorf("embedded word list: %w", err)
 	}
-	defer zr.Close()
+	defer zr.Close() //nolint:errcheck // read-only
 
 	var words []string
 	sc := bufio.NewScanner(zr)
@@ -205,7 +205,7 @@ func addGloss(s *dictdb.Set, name, title, path string) {
 		if err != nil {
 			return nil, err
 		}
-		defer f.Close()
+		defer f.Close() //nolint:errcheck // read-only
 		return dictdb.ReadGloss(name, title, f)
 	})
 }

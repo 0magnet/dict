@@ -83,7 +83,7 @@ func RainStill(width, height, gap int, seed int64, force bool) string {
 // terminalHeight is the rows to fill, less one so the shell prompt that
 // follows does not scroll the top row away.
 func terminalHeight() int {
-	if _, h, err := term.GetSize(int(os.Stdout.Fd())); err == nil && h > 4 {
+	if _, h, err := term.GetSize(int(os.Stdout.Fd())); err == nil && h > 4 { //nolint:staticcheck // SA4023 fires only under js/wasm, where term.GetSize cannot succeed; this is the process path
 		return h - 1
 	}
 	return 24

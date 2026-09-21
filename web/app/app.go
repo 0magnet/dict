@@ -23,7 +23,7 @@ import (
 
 // Register adds the dict command to the shell.
 func Register() {
-	shell.RegisterApplet("dict", "look up how a word is spelled and what it means (try: dict recieve)",
+	shell.RegisterApplet("dict", "look up how a word is spelled and what it means (try: dict recieve)", //nolint:misspell // the misspelling is the demo: it is what finds the word
 		func(ctx context.Context, s *shell.Shell, hc *interp.HandlerContext, args []string) int {
 			// websh strips the command name and cobra expects it gone too.
 			return cmd.Run(ctx, hostFor(s, hc), args, hc.Stdout, hc.Stderr)

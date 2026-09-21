@@ -34,7 +34,7 @@ func named(display string, parts ...dictdb.Part) dictdb.Tag {
 // enough for a frame and its clause together, since a word is spent once used
 // and a noun phrase can want several.
 func stocked() *vocabulary {
-	v := newVocabulary(nil, nil, rand.New(rand.NewPCG(1, 2)))
+	v := newVocabulary(nil, nil, rand.New(rand.NewPCG(1, 2))) //nolint:gosec // a fixed seed is the point: the test repeats a run
 	add := func(p dictdb.Part, words []string, mk func(string) dictdb.Tag) {
 		for _, w := range words {
 			v.pools[p] = append(v.pools[p], mk(w))
@@ -162,7 +162,7 @@ func TestWordsAreNotReused(t *testing.T) {
 
 // The forms a blank asks for are the ones it gets.
 func TestInflectedBlanks(t *testing.T) {
-	v := newVocabulary(nil, nil, rand.New(rand.NewPCG(3, 4)))
+	v := newVocabulary(nil, nil, rand.New(rand.NewPCG(3, 4))) //nolint:gosec // as above
 	v.pools[dictdb.Noun] = []dictdb.Tag{tagged("abbacy", dictdb.Noun)}
 	v.pools[dictdb.Transitive] = []dictdb.Tag{{Word: "rend", Past: "rent", Participle: "rent", Gerund: "rending", Third: "rends"}}
 
@@ -233,7 +233,7 @@ func TestVocabularyDrawsTheRightPartOfSpeech(t *testing.T) {
 		t.Fatal(err)
 	}
 	defs := dictionaries()
-	v := newVocabulary(words, defs, rand.New(rand.NewPCG(7, 7)))
+	v := newVocabulary(words, defs, rand.New(rand.NewPCG(7, 7))) //nolint:gosec // a fixed seed is the point: the test repeats a run
 	for _, p := range []dictdb.Part{dictdb.Noun, dictdb.Verb, dictdb.Transitive, dictdb.Intransitive, dictdb.Adjective, dictdb.Adverb} {
 		for i := 0; i < 3; i++ {
 			tag := v.take(p)
@@ -281,7 +281,7 @@ func TestSeedRepeats(t *testing.T) {
 		t.Fatal(err)
 	}
 	run := func() string {
-		v := newVocabulary(words, dictionaries(), rand.New(rand.NewPCG(42, 0)))
+		v := newVocabulary(words, dictionaries(), rand.New(rand.NewPCG(42, 0))) //nolint:gosec // as above
 		s, err := v.sentence()
 		if err != nil {
 			t.Fatal(err)
@@ -369,7 +369,7 @@ func TestNamesStayOutOfCommonSlots(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v := newVocabulary(words, dictionaries(), rand.New(rand.NewPCG(9, 9)))
+	v := newVocabulary(words, dictionaries(), rand.New(rand.NewPCG(9, 9))) //nolint:gosec // as above
 	for _, p := range []dictdb.Part{dictdb.Noun, dictdb.Verb, dictdb.Adjective, dictdb.Adverb} {
 		for i := 0; i < 20; i++ {
 			tag := v.take(p)
@@ -390,7 +390,7 @@ func TestDrawFindsPeopleAndPlaces(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v := newVocabulary(words, dictionaries(), rand.New(rand.NewPCG(4, 4)))
+	v := newVocabulary(words, dictionaries(), rand.New(rand.NewPCG(4, 4))) //nolint:gosec // as above
 	for _, p := range []dictdb.Part{dictdb.Person, dictdb.Place, dictdb.Name} {
 		for i := 0; i < 3; i++ {
 			tag := v.take(p)
@@ -488,7 +488,7 @@ func TestStructureVaries(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v := newVocabulary(words, dictionaries(), rand.New(rand.NewPCG(31, 41)))
+	v := newVocabulary(words, dictionaries(), rand.New(rand.NewPCG(31, 41))) //nolint:gosec // as above
 
 	const runs = 200
 	openings := map[string]int{}

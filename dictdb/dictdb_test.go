@@ -238,7 +238,7 @@ func TestNoWikitextAnywhere(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck // test plumbing
 	g, err := dictdb.ReadGloss(data.WiktName, data.WiktTitle, f)
 	if err != nil {
 		t.Fatal(err)
@@ -249,7 +249,7 @@ func TestNoWikitextAnywhere(t *testing.T) {
 	}
 	bad := 0
 	for _, w := range words {
-		defs, _ := g.Lookup(strings.ToLower(w))
+		defs, _ := g.Lookup(strings.ToLower(w)) //nolint:errcheck // asserting on Has, not on the text
 		for _, d := range defs {
 			if strings.Contains(d, "{{") || strings.Contains(d, "[[") || strings.Contains(d, "'''") {
 				if bad < 5 {

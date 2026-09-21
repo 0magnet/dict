@@ -10,14 +10,14 @@ import (
 
 // scan drives the finder without a screen, so the rules can be tested
 // apart from the drawing.
-func (g *rainGlow) scan(rows []string) []rune {
+func (g *rainGlow) scan(rows []string) {
 	g.cols, g.rows = len(rows[0]), len(rows)
 	g.holds = nil
-	return g.rescan(rows)
+	g.rescan(rows)
 }
 
 // rescan feeds another frame to an existing glow, keeping its holds.
-func (g *rainGlow) rescan(rows []string) []rune {
+func (g *rainGlow) rescan(rows []string) {
 	glyph := make([]rune, g.cols*g.rows)
 	for y, r := range rows {
 		for x, c := range []rune(r) {
@@ -29,7 +29,6 @@ func (g *rainGlow) rescan(rows []string) []rune {
 	g.expireHolds(glyph)
 	g.findWords(g.scanGrid(glyph))
 	g.absorbHolds()
-	return glyph
 }
 
 func newTestGlow(words ...string) *rainGlow {

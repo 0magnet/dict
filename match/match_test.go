@@ -110,7 +110,7 @@ func loadSystemWords(t testing.TB) []string {
 	if err != nil {
 		t.Skip("no /usr/share/dict/words on this machine")
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck // test plumbing
 	var words []string
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {

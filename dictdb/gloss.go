@@ -40,7 +40,7 @@ func ReadGloss(name, title string, r io.Reader) (*Gloss, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", name, err)
 	}
-	defer zr.Close()
+	defer zr.Close() //nolint:errcheck // read-only
 
 	g := &Gloss{name: name, title: title}
 	sc := bufio.NewScanner(zr)

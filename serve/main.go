@@ -10,6 +10,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -17,5 +18,18 @@ func main() {
 	dir := flag.String("dir", ".", "directory to serve")
 	flag.Parse()
 	log.Printf("serving %s on http://localhost%s", *dir, *addr)
-	log.Fatal(http.ListenAndServe(*addr, http.FileServer(http.Dir(*dir))))
+
+	// Timeouts, where http.ListenAndServe would have none. This serves a
+	// directory to a browser on the same machine and nothing here is
+	// load-bearing, but the write timeout still has to be generous: what it
+	// serves includes a 22 MB .wasm.
+	srv := &http.Server{
+		Addr:              *addr,
+		Handler:           http.FileServer(http.Dir(*dir)),
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      5 * time.Minute,
+		IdleTimeout:       2 * time.Minute,
+	}
+	log.Fatal(srv.ListenAndServe())
 }

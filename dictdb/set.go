@@ -124,7 +124,7 @@ func (s *Set) AddFS(fsys fs.FS, name, indexPath, bodyPath string) {
 		if err != nil {
 			return nil, err
 		}
-		defer idx.Close()
+		defer idx.Close() //nolint:errcheck // read-only
 
 		// Index files are plain text and compress about four to one, so the
 		// embedded copies are gzipped; the bodies already carry their own
@@ -135,7 +135,7 @@ func (s *Set) AddFS(fsys fs.FS, name, indexPath, bodyPath string) {
 			if err != nil {
 				return nil, fmt.Errorf("%s index: %w", name, err)
 			}
-			defer zr.Close()
+			defer zr.Close() //nolint:errcheck // read-only
 			r = zr
 		}
 		raw, err := fs.ReadFile(fsys, bodyPath)
@@ -162,22 +162,22 @@ func (s *Set) AddDir(dir, name string) error {
 		}
 	}
 	s.Add(name, func() (Dictionary, error) {
-		idx, err := os.Open(index)
+		idx, err := os.Open(index) //nolint:gosec // an installed dictionary, from the directories in data.DictdDirs
 		if err != nil {
 			return nil, err
 		}
-		defer idx.Close()
-		f, err := os.Open(body)
+		defer idx.Close()       //nolint:errcheck // read-only
+		f, err := os.Open(body) //nolint:gosec // as above
 		if err != nil {
 			return nil, err
 		}
 		st, err := f.Stat()
 		if err != nil {
-			f.Close()
+			f.Close() //nolint:errcheck,gosec // read-only
 			return nil, err
 		}
 		if st.Size() == 0 {
-			f.Close()
+			f.Close() //nolint:errcheck,gosec // read-only
 			return nil, fmt.Errorf("%s: empty", body)
 		}
 		return Open(name, idx, f)

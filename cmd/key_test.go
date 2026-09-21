@@ -14,11 +14,11 @@ func keyTest(t *testing.T, in []byte, want []keyKind) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer r.Close()
+	defer r.Close() //nolint:errcheck // test plumbing; the pipe dies with the test
 
 	kr := newKeyReader(r)
 	go func() {
-		w.Write(in)
+		w.Write(in) //nolint:errcheck,gosec // as above
 		// Left open: closing here would race the 50ms escape timeout and
 		// turn a bare Escape into an end-of-input instead.
 	}()
@@ -49,7 +49,7 @@ func keyTest(t *testing.T, in []byte, want []keyKind) {
 	case <-time.After(3 * time.Second):
 		t.Fatal("decoder blocked; a key was never produced")
 	}
-	w.Close()
+	w.Close() //nolint:errcheck,gosec // as above
 }
 
 func TestDecodeBareEscape(t *testing.T) {
@@ -79,10 +79,10 @@ func TestDecodeControls(t *testing.T) {
 }
 
 func TestDecodeUTF8(t *testing.T) {
-	r, w, _ := os.Pipe()
-	defer r.Close()
+	r, w, _ := os.Pipe() //nolint:errcheck // as above
+	defer r.Close()      //nolint:errcheck // as above
 	kr := newKeyReader(r)
-	go w.Write([]byte("café"))
+	go w.Write([]byte("café")) //nolint:errcheck // as above
 
 	var got []rune
 	for i := 0; i < 4; i++ {
@@ -98,15 +98,15 @@ func TestDecodeUTF8(t *testing.T) {
 	if string(got) != "café" {
 		t.Errorf("decoded %q, want %q", string(got), "café")
 	}
-	w.Close()
+	w.Close() //nolint:errcheck,gosec // as above
 }
 
 func TestDecodeEndOfInput(t *testing.T) {
 	// A closed input must surface as an interrupt so the caller can exit,
 	// rather than blocking forever.
-	r, w, _ := os.Pipe()
+	r, w, _ := os.Pipe() //nolint:errcheck // as above
 	kr := newKeyReader(r)
-	w.Close()
+	w.Close() //nolint:errcheck,gosec // as above
 
 	done := make(chan struct{})
 	go func() {
@@ -121,5 +121,5 @@ func TestDecodeEndOfInput(t *testing.T) {
 	case <-time.After(3 * time.Second):
 		t.Fatal("decoder blocked on end of input")
 	}
-	r.Close()
+	r.Close() //nolint:errcheck,gosec // as above
 }

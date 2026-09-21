@@ -277,7 +277,7 @@ func doWithRetry(client *http.Client, req *http.Request) ([]byte, error) {
 					wait = time.Duration(secs) * time.Second
 				}
 			}
-			resp.Body.Close()
+			resp.Body.Close() //nolint:errcheck,gosec // read-only
 			if attempt >= maxRetries {
 				return nil, fmt.Errorf("http %d after %d attempts", resp.StatusCode, attempt+1)
 			}
@@ -285,7 +285,7 @@ func doWithRetry(client *http.Client, req *http.Request) ([]byte, error) {
 			time.Sleep(wait)
 			continue
 		}
-		defer resp.Body.Close()
+		defer resp.Body.Close() //nolint:errcheck // read-only
 		if resp.StatusCode != 200 {
 			return nil, fmt.Errorf("http %d", resp.StatusCode)
 		}

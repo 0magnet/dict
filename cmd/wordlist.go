@@ -42,7 +42,7 @@ func findWordlist(explicit, lang string) (string, error) {
 		return p, nil
 	}
 	if p := os.Getenv("DICT_WORDS"); p != "" {
-		if _, err := os.Stat(p); err != nil {
+		if _, err := os.Stat(p); err != nil { //nolint:gosec // the word list to read is what the user asked for
 			return "", fmt.Errorf("$DICT_WORDS=%s: %w", p, err)
 		}
 		return p, nil
@@ -78,11 +78,11 @@ func listLanguages() ([]string, error) {
 // contractions are kept, because "don't" is a word you may well be checking,
 // and ranking pushes the noisy forms down on its own.
 func loadWords(path string) ([]string, error) {
-	f, err := os.Open(path)
+	f, err := os.Open(path) //nolint:gosec // as above
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck // read-only
 
 	var words []string
 	sc := bufio.NewScanner(f)

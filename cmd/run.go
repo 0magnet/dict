@@ -54,12 +54,12 @@ func reset() {
 	opts = options{}
 	RootCmd.Flags().VisitAll(func(f *pflag.Flag) {
 		f.Changed = false
-		_ = f.Value.Set(f.DefValue)
+		_ = f.Value.Set(f.DefValue) //nolint:errcheck // restoring a flag to its own default cannot fail
 	})
 	for _, c := range RootCmd.Commands() {
 		c.Flags().VisitAll(func(f *pflag.Flag) {
 			f.Changed = false
-			_ = f.Value.Set(f.DefValue)
+			_ = f.Value.Set(f.DefValue) //nolint:errcheck // as above
 		})
 	}
 }

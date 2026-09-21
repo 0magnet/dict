@@ -39,7 +39,7 @@ func Dictionaries(base string) data.Fetcher {
 		if err != nil {
 			return nil, fmt.Errorf("%s index: %w", name, err)
 		}
-		defer zr.Close()
+		defer zr.Close() //nolint:errcheck // read-only
 		return dictdb.Open(name, zr, &ranged{url: base + body})
 	}
 }

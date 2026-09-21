@@ -209,7 +209,7 @@ func terminalWidth() int {
 		}
 		return w - 1
 	}
-	if w, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil && w > 20 {
+	if w, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil && w > 20 { //nolint:staticcheck // as in cmd/rain.go: the process path, degenerate under js/wasm
 		if w > 100 {
 			return 100
 		}
@@ -233,7 +233,7 @@ var languagesCmd = &cobra.Command{
 		if err != nil || len(names) == 0 {
 			// Saying nothing here reads as though the command failed, when in
 			// fact nothing is wrong: this is an optional extra.
-			fmt.Fprintf(errOut(),
+			fmt.Fprintf(errOut(), //nolint:errcheck // a closed stderr is the caller's business
 				"no word lists in %s; install a words package to search other languages\n"+
 					"(the built-in English list and dictionaries need nothing installed)\n", dictDir)
 			return nil
@@ -433,7 +433,7 @@ func pickUnseen(n int, seen map[int]bool) int {
 		return -1
 	}
 	for tries := 0; tries < 64; tries++ {
-		i := rand.IntN(n)
+		i := rand.IntN(n) //nolint:gosec // picking a word to show someone, not a key
 		if !seen[i] {
 			seen[i] = true
 			return i

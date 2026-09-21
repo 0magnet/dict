@@ -187,7 +187,7 @@ func (z *dictzip) inflateChunk(i int) ([]byte, error) {
 		return nil, fmt.Errorf("dictzip: reading chunk %d: %w", i, err)
 	}
 	fr := flate.NewReader(bytes.NewReader(comp))
-	defer fr.Close()
+	defer fr.Close() //nolint:errcheck // read-only
 	out := make([]byte, z.chunkLen)
 	n, err := io.ReadFull(fr, out)
 	// The final chunk is short, and a chunk ends without a terminating block,

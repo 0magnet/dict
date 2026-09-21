@@ -148,12 +148,12 @@ func main() {
 	sort.Strings(keys)
 
 	var buf bytes.Buffer
-	zw, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
+	zw, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression) //nolint:errcheck // the level is a constant; it cannot be rejected
 	for _, k := range keys {
-		fmt.Fprintf(zw, "%s\t%s\n", k, strings.Join(glosses[k], "\\n"))
+		fmt.Fprintf(zw, "%s\t%s\n", k, strings.Join(glosses[k], "\\n")) //nolint:errcheck // writing to a buffer
 	}
 	check(zw.Close())
-	check(os.WriteFile(outPath, buf.Bytes(), 0o644))
+	check(os.WriteFile(outPath, buf.Bytes(), 0o644)) //nolint:gosec // a data file meant to be committed and read
 	fmt.Fprintf(os.Stderr, "wrote %s: %d words, %d bytes\n", outPath, len(keys), buf.Len())
 
 	// Whatever the names file still cannot answer is ordinary vocabulary, so
@@ -194,12 +194,12 @@ func writeGloss(path string, entries map[string][]string) {
 	sort.Strings(keys)
 
 	var buf bytes.Buffer
-	zw, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
+	zw, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression) //nolint:errcheck // as above
 	for _, k := range keys {
-		fmt.Fprintf(zw, "%s\t%s\n", k, strings.Join(entries[k], "\\n"))
+		fmt.Fprintf(zw, "%s\t%s\n", k, strings.Join(entries[k], "\\n")) //nolint:errcheck // writing to a buffer
 	}
 	check(zw.Close())
-	check(os.WriteFile(path, buf.Bytes(), 0o644))
+	check(os.WriteFile(path, buf.Bytes(), 0o644)) //nolint:gosec // as above
 	fmt.Fprintf(os.Stderr, "wrote %s: %d words, %d bytes\n", path, len(keys), buf.Len())
 }
 
@@ -258,7 +258,7 @@ func addSurnames(gap map[string]bool, at func(string) *info) {
 		cr := csv.NewReader(rc)
 		cr.FieldsPerRecord = -1
 		rows, err := cr.ReadAll()
-		rc.Close()
+		rc.Close() //nolint:errcheck,gosec // read-only
 		check(err)
 		n := 0
 		for k, rec := range rows {
@@ -276,7 +276,7 @@ func addSurnames(gap map[string]bool, at func(string) *info) {
 			i := at(name)
 			i.surname = true
 			i.surnameCount = count
-			i.surnameRank, _ = strconv.Atoi(rec[1])
+			i.surnameRank, _ = strconv.Atoi(rec[1]) //nolint:errcheck // absent or malformed reads as zero, which is the answer
 			n++
 		}
 		fmt.Fprintf(os.Stderr, "surnames: %d\n", n)
@@ -307,7 +307,7 @@ func addPlaces(gap map[string]bool, at func(string) *info) {
 		rc, err := f.Open()
 		check(err)
 		raw, err := io.ReadAll(rc)
-		rc.Close()
+		rc.Close() //nolint:errcheck,gosec // read-only
 		check(err)
 
 		for _, line := range strings.Split(string(raw), "\n") {
@@ -315,7 +315,7 @@ func addPlaces(gap map[string]bool, at func(string) *info) {
 			if len(rec) <= colPop {
 				continue
 			}
-			pop, _ := strconv.Atoi(rec[colPop])
+			pop, _ := strconv.Atoi(rec[colPop]) //nolint:errcheck // as above
 			for _, nm := range []string{rec[colName], rec[colASCII]} {
 				key := strings.ToLower(nm)
 				if key == "" || !gap[key] {
@@ -371,9 +371,9 @@ func fetchAdmin1() map[string]string    { return fetchTable(admin1URL, 0, 1) }
 // fetchTable reads a tab-separated GeoNames table into a key/value map.
 func fetchTable(url string, keyCol, valCol int) map[string]string {
 	fmt.Fprintf(os.Stderr, "fetching %s\n", url)
-	resp, err := http.Get(url)
+	resp, err := http.Get(url) //nolint:gosec // a generator, fetching the sources named at the top
 	check(err)
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // read-only
 	b, err := io.ReadAll(resp.Body)
 	check(err)
 
@@ -392,9 +392,9 @@ func fetchTable(url string, keyCol, valCol int) map[string]string {
 
 func fetchZip(url string) *zip.Reader {
 	fmt.Fprintf(os.Stderr, "fetching %s\n", url)
-	resp, err := http.Get(url)
+	resp, err := http.Get(url) //nolint:gosec // as above
 	check(err)
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // read-only
 	if resp.StatusCode != 200 {
 		check(fmt.Errorf("%s: http %d", url, resp.StatusCode))
 	}
