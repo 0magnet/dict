@@ -87,7 +87,8 @@ func runUnicode(cmd *cobra.Command, args []string) error {
 	}
 	switch {
 	case uniOpts.blocks:
-		return printBlocks(tab)
+		printBlocks(tab)
+		return nil
 	case uniOpts.list || uniOpts.block != "":
 		return listChars(tab)
 	case uniOpts.file != "":
@@ -372,11 +373,10 @@ func squash(s string) string {
 	return b.String()
 }
 
-func printBlocks(tab *unidata.Table) error {
+func printBlocks(tab *unidata.Table) {
 	for _, b := range tab.Blocks() {
 		printf("%-9s %-9s %s\n", unidata.Code(b.Lo), unidata.Code(b.Hi), b.Name)
 	}
-	return nil
 }
 
 // pickChar runs the interactive picker over the character names.
