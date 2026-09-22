@@ -1,8 +1,12 @@
 package cmd
 
 import (
+	"slices"
 	"strings"
 	"testing"
+	"unicode/utf8"
+
+	"github.com/clipperhouse/displaywidth"
 
 	"github.com/0magnet/dict/match"
 )
@@ -169,9 +173,9 @@ func TestCenterKeepsTheSelectionOnScreen(t *testing.T) {
 	}
 }
 
-// TestRowShowsTheOrdinal pins the number to the left of the marker: it is the
-// word's place in the word list counted from one, and it does not change when
-// the search reorders the results.
+// TestRowShowsTheOrdinal pins the number in the margin: it is the word's place
+// in the word list counted from one, and it does not change when the search
+// reorders the results.
 func TestRowShowsTheOrdinal(t *testing.T) {
 	words := []string{"aardvark", "abacus", "yarn", "zygote"}
 	u := newSearchUI(words)
@@ -184,7 +188,7 @@ func TestRowShowsTheOrdinal(t *testing.T) {
 	}
 	// zygote is the fourth word, so the first row reads "4 > zygote"
 	// however well it ranked.
-	if want := "4 > zygote"; stripSGR(row) != want {
+	if want := "4 │ > zygote"; stripSGR(row) != want {
 		t.Errorf("row = %q, want %q", stripSGR(row), want)
 	}
 }
@@ -201,7 +205,7 @@ func TestRowDrawsWhatTheEntryStandsFor(t *testing.T) {
 		display: func(w string) string { return stands[w] },
 	}
 	u.search()
-	for i, want := range []string{"1 > x", "2   中", "3   word"} {
+	for i, want := range []string{"1 │ > x", "2 │   中", "3 │   word"} {
 		row := u.renderRow(u.results[i], i == 0, 40)
 		if got := stripSGR(row); got != want {
 			t.Errorf("row %d = %q, want %q", i, got, want)
@@ -268,9 +272,109 @@ func TestMarginShowsTheCodeForACharacter(t *testing.T) {
 		code: func(w string) string { return codes[w] },
 	}
 	u.search()
-	for i, want := range []string{"     1   word", "U+2603   ☃"} {
+	for i, want := range []string{"     1 │   word", "U+2603 │   ☃"} {
 		if got := stripSGR(u.renderRow(u.results[i], false, 40)); got != want {
 			t.Errorf("row %d = %q, want %q", i, got, want)
 		}
+	}
+}
+
+// barsAt reports the visible columns a string puts a vertical rule or a
+// crossing in, measured the way a terminal draws it.
+func barsAt(s string) []int {
+	var at []int
+	col := 0
+	for i := 0; i < len(s); {
+		if s[i] == 0x1b {
+			j := i + 1
+			if j < len(s) && s[j] == '[' {
+				for j < len(s) && !(s[j] >= 'A' && s[j] <= 'Z' || s[j] >= 'a' && s[j] <= 'z') {
+					j++
+				}
+				i = j + 1
+				continue
+			}
+		}
+		r, size := utf8.DecodeRuneInString(s[i:])
+		if size == 0 {
+			break
+		}
+		if r == '│' || r == '┼' {
+			at = append(at, col)
+		}
+		col += displaywidth.Rune(r)
+		i += size
+	}
+	return at
+}
+
+// TestTableLinesUp: the header, the rule under it, every row and the empty
+// rows past the end of the list all put their separators in the same columns.
+// That is the only thing making the screen read as one table rather than as
+// four things that happen to be stacked.
+//
+// The wide entry is the case that used to break it, before widths were
+// measured in columns instead of runes.
+func TestTableLinesUp(t *testing.T) {
+	u := &ui{
+		ix: match.NewIndex([]string{"word", "WIDE"}), rows: 16, cols: 70, total: 2,
+		marginW: 6, keyLabel: "index", itemLabel: "word", showDefs: true,
+		display: func(w string) string {
+			if w == "WIDE" {
+				return "中"
+			}
+			return ""
+		},
+		code: func(w string) string {
+			if w == "WIDE" {
+				return "U+4E2D"
+			}
+			return ""
+		},
+	}
+	u.search()
+	listW, defW, pane := u.paneWidths(u.cols)
+	if !pane {
+		t.Fatal("expected the definition pane at 70 columns")
+	}
+
+	head, rule := u.columns(listW, defW, pane)
+	want := barsAt(head)
+	if len(want) != 2 {
+		t.Fatalf("the header has %d separators, want 2: %q", len(want), stripSGR(head))
+	}
+	for _, s := range []string{"index", "word", "definition"} {
+		if !strings.Contains(stripSGR(head), s) {
+			t.Errorf("the header does not name the %s column: %q", s, stripSGR(head))
+		}
+	}
+	if got := barsAt(rule); !slices.Equal(got, want) {
+		t.Errorf("the rule crosses at %v, the header separates at %v", got, want)
+	}
+
+	pad := func(left string) string {
+		return padVisible(left, listW) + sgrDim + colSep + sgrReset
+	}
+	for i := range u.results {
+		if got := barsAt(pad(u.renderRow(u.results[i], i == 0, listW))); !slices.Equal(got, want) {
+			t.Errorf("row %d separates at %v, want %v", i, got, want)
+		}
+	}
+	if got := barsAt(pad(u.blankRow())); !slices.Equal(got, want) {
+		t.Errorf("an empty row separates at %v, want %v -- the line down the screen is broken", got, want)
+	}
+}
+
+// TestHeaderLeavesRoomForItself: the header and its rule are two of the four
+// lines that are not list, and listRows has to say so or the last rows are
+// drawn off the bottom of the screen.
+func TestHeaderLeavesRoomForItself(t *testing.T) {
+	u := &ui{rows: 24}
+	if got := u.listRows(); got != 20 {
+		t.Errorf("listRows = %d on a 24-row terminal, want 20 (prompt, status, header, rule)", got)
+	}
+	u.rows = 3
+	if got := u.listRows(); got < 1 {
+		t.Errorf("listRows = %d on a terminal too short for the frame, want at least 1", got)
 	}
 }

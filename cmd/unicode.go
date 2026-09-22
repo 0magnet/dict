@@ -531,8 +531,10 @@ func pickChar(tab *unidata.Table, query string) error {
 		reverse: uniOpts.reverse, defs: characterSet(), showDefs: true,
 		display: charDisplay(), value: charValue(),
 		// Every row here is a character, so the ordinal never shows: this
-		// list is indexed by code point and always was.
+		// list is indexed by code point and always was, and the header
+		// says so.
 		code: code, codeW: codeW,
+		keyLabel: "code", itemLabel: "character",
 	})
 	if err != nil {
 		return err

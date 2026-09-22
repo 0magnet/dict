@@ -31,6 +31,12 @@ const (
 	sgrSelected = esc + "[7m"
 	sgrMatch    = esc + "[1;36m"
 	sgrDim      = esc + "[2m"
+
+	// The columns are separated the same way wherever they meet, and the
+	// rule under the header crosses each separator where its bar is.
+	colSep  = " │ "
+	colSepW = 3
+	ruleSep = "─┼─"
 )
 
 type ui struct {
@@ -47,9 +53,11 @@ type ui struct {
 	cols       int
 	reverse    bool // prompt on top, list downward, as with fzf --layout=reverse
 
-	marginW int // columns the dim column before the marker takes
-	code    func(word string) string
-	display func(word string) string
+	marginW   int // columns the dim column before the marker takes
+	keyLabel  string
+	itemLabel string
+	code      func(word string) string
+	display   func(word string) string
 
 	// definition pane
 	defs     *dictdb.Set
@@ -166,6 +174,13 @@ type pick struct {
 	// that tells them apart. codeW is the widest it returns.
 	code  func(word string) string
 	codeW int
+
+	// keyLabel and itemLabel head the two columns of the list. They differ
+	// between the pickers because the columns do: the word list is indexed
+	// by position and holds words, and the character table is indexed by
+	// code point and holds characters. Empty means "index" and "word".
+	keyLabel  string
+	itemLabel string
 }
 
 // runInteractive drives the interactive search and returns the chosen word,
@@ -192,6 +207,7 @@ func runInteractive(p pick) (string, error) {
 		query: []rune(p.query), reverse: p.reverse,
 		defs: p.defs, tailDefs: p.tailDefs, showDefs: p.showDefs,
 		display: p.display, code: p.code,
+		keyLabel: or(p.keyLabel, "index"), itemLabel: or(p.itemLabel, "word"),
 		// One column, wide enough for whichever of the two it has to hold.
 		marginW: max(digits(len(p.ix.Words)), p.codeW),
 	}
@@ -325,7 +341,7 @@ func (u *ui) up() int {
 }
 
 func (u *ui) listRows() int {
-	n := u.rows - 2 // one header line, one status line
+	n := u.rows - 4 // the prompt, the status line, the header and its rule
 	if n < 1 {
 		n = 1
 	}
@@ -455,12 +471,55 @@ func (u *ui) paneWidths(w int) (listW, defW int, show bool) {
 	return listW, w - listW - 3, true
 }
 
-// lead is what a row spends before the selection marker: the margin.
+// lead is what a row spends before the selection marker: the margin and the
+// separator after it.
 func (u *ui) lead() int {
 	if u.marginW > 0 {
-		return u.marginW + 1
+		return u.marginW + colSepW
 	}
 	return 0
+}
+
+// columns draws the header and the rule under it, so that the margin reads
+// as a column of the table rather than a number stuck to the front of every
+// row. Both are one line and both are dim, like the status line.
+func (u *ui) columns(listW, defW int, pane bool) (head, rule string) {
+	itemW := listW - u.lead()
+	if itemW < 0 {
+		itemW = 0
+	}
+	// The item label lines up with the words rather than the marker, which
+	// is two columns of selection and not part of the column.
+	h := fmt.Sprintf("%*s%s%s", u.marginW, u.keyLabel, colSep, fit("  "+u.itemLabel, itemW))
+	r := strings.Repeat("─", u.marginW) + ruleSep + strings.Repeat("─", itemW)
+	if pane {
+		h += colSep + fit("definition", defW)
+		r += ruleSep + strings.Repeat("─", defW)
+	}
+	return sgrDim + truncate(h, u.cols) + sgrReset, sgrDim + truncate(r, u.cols) + sgrReset
+}
+
+// blankRow is a row with nothing on it, which still has to carry the
+// separator or the line down the screen would be broken wherever the list
+// runs out.
+func (u *ui) blankRow() string {
+	if u.marginW == 0 {
+		return ""
+	}
+	return sgrDim + strings.Repeat(" ", u.marginW) + colSep + sgrReset
+}
+
+// fit pads or truncates a plain string, one that carries no escapes of its
+// own, to an exact width.
+func fit(s string, w int) string {
+	if w <= 0 {
+		return ""
+	}
+	s = truncate(s, w)
+	if n := len([]rune(s)); n < w {
+		s += strings.Repeat(" ", w-n)
+	}
+	return s
 }
 
 // digits is how many columns the largest ordinal needs.
@@ -547,7 +606,7 @@ func (u *ui) draw() {
 	// Render the visible matches once, in rank order.
 	rendered := make([]string, 0, listRows)
 	if n == 0 && len(u.query) > 0 {
-		rendered = append(rendered, sgrDim+"  no matches"+sgrReset)
+		rendered = append(rendered, u.blankRow()+sgrDim+"  no matches"+sgrReset)
 	}
 	for i := 0; i < n; i++ {
 		idx := u.off + i
@@ -566,6 +625,11 @@ func (u *ui) draw() {
 			left[r] = ln
 		}
 	}
+	for i := range left {
+		if left[i] == "" {
+			left[i] = u.blankRow()
+		}
+	}
 
 	var right []string
 	if pane {
@@ -574,6 +638,7 @@ func (u *ui) draw() {
 
 	prompt := "> " + string(u.query) + sgrDim + "▏" + sgrReset
 	status := sgrDim + truncate(u.statusLine(), w) + sgrReset
+	head, rule := u.columns(listW, defW, pane)
 
 	var b bytes.Buffer
 	b.WriteString(esc + "[H" + esc + "[2J")
@@ -582,7 +647,7 @@ func (u *ui) draw() {
 		for i := 0; i < listRows; i++ {
 			if pane {
 				b.WriteString(padVisible(left[i], listW))
-				b.WriteString(sgrDim + " │ " + sgrReset)
+				b.WriteString(sgrDim + colSep + sgrReset)
 				if i < len(right) {
 					b.WriteString(right[i])
 				}
@@ -593,15 +658,21 @@ func (u *ui) draw() {
 		}
 	}
 
+	// The header stays directly above the rows it labels in both layouts,
+	// which puts it in a different place relative to the prompt in each.
 	if u.reverse {
 		// fzf's --layout=reverse: prompt on top, list running downward.
 		b.WriteString(prompt + "\r\n")
 		b.WriteString(status + "\r\n")
+		b.WriteString(head + "\r\n")
+		b.WriteString(rule + "\r\n")
 		writeRows()
 	} else {
 		// fzf's default layout, which is what the shell function this
 		// replaces shows: the prompt sits on the bottom line and matches
 		// stack upward from just above it.
+		b.WriteString(head + "\r\n")
+		b.WriteString(rule + "\r\n")
 		writeRows()
 		b.WriteString(status + "\r\n")
 		b.WriteString(prompt)
@@ -627,7 +698,7 @@ func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 		if m == "" {
 			m = strconv.Itoa(r.At + 1)
 		}
-		fmt.Fprintf(&b, "%s%*s %s", sgrDim, u.marginW, m, sgrReset)
+		fmt.Fprintf(&b, "%s%*s%s%s", sgrDim, u.marginW, m, colSep, sgrReset)
 	}
 	if selected {
 		b.WriteString(sgrSelected)
@@ -759,4 +830,12 @@ func truncate(s string, w int) string {
 		return ""
 	}
 	return string(r[:w-1])
+}
+
+// or is s, or alt when s is empty.
+func or(s, alt string) string {
+	if s == "" {
+		return alt
+	}
+	return s
 }

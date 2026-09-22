@@ -54,11 +54,15 @@ built-in dictionaries. `:unicode` is below, and `:adlib` after that.
 
 ## The picker
 
-Each row carries a dim margin saying which entry it is: for a word its place
-in the list, so the list can be used as an index and not only as a filter, and
-for a character its code point. That is the one thing that tells two
-characters apart when a terminal draws both as the same smudge, and the thing
-to type into a program that wants one.
+The screen is a table — headed `index | word | definition`, ruled underneath,
+and with the same vertical rule between every pair of columns.
+
+The margin says which entry each row is: for a word its place in the list, so
+the list can be used as an index and not only as a filter, and for a character
+its code point. That is the one thing that tells two characters apart when a
+terminal draws both as the same smudge, and the thing to type into a program
+that wants one. In `dict :unicode`, where every row is a character, the header
+reads `code | character | definition` instead.
 
 The list does not end at `Zzz`. The 41,293 Unicode characters follow the
 words, so you can scroll off the end of the dictionary straight into `U+0000`. A
