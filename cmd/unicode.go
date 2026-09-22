@@ -228,15 +228,18 @@ func charLine(c unidata.Char) string {
 	if uniOpts.noNames {
 		return ansi(unidata.Glyph(c))
 	}
-	return fmt.Sprintf("%s  %-8s %s", pad2(unidata.Glyph(c)), unidata.Code(c.Code), c.Name)
+	return fmt.Sprintf("%s  %-8s %s", ansi(pad2(unidata.Glyph(c))), unidata.Code(c.Code), c.Name)
 }
 
+// pad2 widens a glyph to exactly two columns. It deliberately adds no escape
+// codes of its own: the picker draws it inside a reverse-video row, where a
+// reset would end the highlight early. Callers writing to a terminal wrap the
+// result in ansi themselves.
 func pad2(glyph string) string {
-	s := ansi(glyph)
 	if w := displaywidth.String(glyph); w < 2 {
-		return s + strings.Repeat(" ", 2-w)
+		return glyph + strings.Repeat(" ", 2-w)
 	}
-	return s
+	return glyph
 }
 
 // ansi wraps a glyph in reset codes, which is what keeps this safe to point
@@ -394,7 +397,21 @@ func pickChar(tab *unidata.Table, query string) error {
 	set := &dictdb.Set{}
 	set.Add(unicodeName, func() (dictdb.Dictionary, error) { return unicodeSource{tab}, nil })
 
-	picked, err := runInteractive(ix, query, "unicode "+tab.Version(), uniOpts.reverse, set, true)
+	picked, err := runInteractive(pick{
+		ix: ix, query: query, source: "unicode " + tab.Version(),
+		reverse: uniOpts.reverse, defs: set, showDefs: true,
+		// Without this the picker lists names and shows no characters,
+		// which is a list of descriptions of things you cannot see --
+		// and seeing the character is the entire errand.
+		glyph: func(name string) string {
+			c, ok := tab.ByName(name)
+			if !ok {
+				return "  "
+			}
+			return pad2(unidata.Glyph(c))
+		},
+		glyphW: 2,
+	})
 	if err != nil {
 		return err
 	}
@@ -437,7 +454,26 @@ func (u unicodeSource) Lookup(word string) ([]string, error) {
 	if !ok {
 		return nil, nil
 	}
-	return []string{strings.Join(charFacts(c), "\n")}, nil
+	return []string{charEntry(c)}, nil
+}
+
+// charEntry is a character's whole entry as the definition pane shows it: the
+// character first, because the pane is where it is looked at, then the facts.
+//
+// The character goes on a labeled line rather than alone on the first one so
+// that the entry can never begin with a bracket. Clean reads a leading
+// parenthesis as a pronunciation and drops it, and LEFT PARENTHESIS is a
+// character someone will look up.
+// A character with nothing to draw gets no line at all. Glyph gives back a
+// space for a format character, a surrogate or an unassigned code point, and
+// "char" followed by a space says less than nothing -- as well as leaving
+// trailing whitespace, which is the form the discovery took.
+func charEntry(c unidata.Char) string {
+	facts := charFacts(c)
+	if g := unidata.Glyph(c); strings.TrimSpace(g) != "" {
+		facts = append([]string{fmt.Sprintf("%-7s %s", "char", g)}, facts...)
+	}
+	return strings.Join(facts, "\n")
 }
 
 func (u unicodeSource) Has(word string) bool {

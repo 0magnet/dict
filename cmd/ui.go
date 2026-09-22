@@ -12,6 +12,8 @@ import (
 
 	"unicode/utf8"
 
+	"github.com/clipperhouse/displaywidth"
+
 	"github.com/0magnet/dict/dictdb"
 	"github.com/0magnet/dict/match"
 	"golang.org/x/term"
@@ -43,6 +45,11 @@ type ui struct {
 	rows       int
 	cols       int
 	reverse    bool // prompt on top, list downward, as with fzf --layout=reverse
+
+	// what a row draws to the left of the word
+	ordW   int // columns the ordinal takes; see pick.glyph for the rest
+	glyph  func(word string) string
+	glyphW int
 
 	// definition pane
 	defs     *dictdb.Set
@@ -118,20 +125,46 @@ func hostSize() (int, int) {
 	return w, h
 }
 
-// run drives the interactive search and returns the chosen word, or "" if the
-// user quit. For a process the interface is drawn on /dev/tty so that stdout
-// carries only the result and stays usable in a pipeline; a host that is not a
-// process supplies its own terminal through Host.TTY, because there is no
-// /dev/tty in js/wasm and no termios behind it.
-func runInteractive(ix *match.Index, query, source string, reverse bool, defs *dictdb.Set, showDefs bool) (string, error) {
+// pick is everything a caller has to say to run the picker: what list to
+// search, where it came from, and how a row is drawn.
+//
+// It is a struct rather than a parameter list because the two callers differ
+// in one field each, and six positional arguments of which four are bare
+// strings and bools is the kind of call that gets one of them wrong.
+type pick struct {
+	ix       *match.Index
+	query    string
+	source   string
+	reverse  bool
+	defs     *dictdb.Set
+	showDefs bool
+
+	// glyph, when set, is drawn between the selection marker and the word:
+	// for the character table it is the character itself, without which the
+	// list is a list of descriptions of things you cannot see.
+	//
+	// It must come back exactly glyphW columns wide and must contain no
+	// escape sequence -- a selected row is drawn in reverse video, and a
+	// reset in the middle of it would end the highlight early.
+	glyph  func(word string) string
+	glyphW int
+}
+
+// runInteractive drives the interactive search and returns the chosen word,
+// or "" if the user quit. For a process the interface is drawn on /dev/tty so
+// that stdout carries only the result and stays usable in a pipeline; a host
+// that is not a process supplies its own terminal through Host.TTY, because
+// there is no /dev/tty in js/wasm and no termios behind it.
+func runInteractive(p pick) (string, error) {
 	tty, size, cleanup, err := openTTY()
 	if err != nil {
 		return "", err
 	}
 
 	u := &ui{
-		out: tty, size: size, ix: ix, sourceName: filepath.Base(source), total: len(ix.Words),
-		query: []rune(query), reverse: reverse, defs: defs, showDefs: showDefs,
+		out: tty, size: size, ix: p.ix, sourceName: filepath.Base(p.source), total: len(p.ix.Words),
+		query: []rune(p.query), reverse: p.reverse, defs: p.defs, showDefs: p.showDefs,
+		ordW: digits(len(p.ix.Words)), glyph: p.glyph, glyphW: p.glyphW,
 	}
 
 	// Restore the terminal on the way out however we leave, including panics.
@@ -205,23 +238,26 @@ func runInteractive(ix *match.Index, query, source string, reverse bool, defs *d
 			u.search()
 		case keyBackspace:
 			if len(u.query) > 0 {
+				here := u.word()
 				u.query = u.query[:len(u.query)-1]
-				u.search()
+				u.searchKeeping(here)
 			}
 		case keyDeleteWord:
+			here := u.word()
 			u.query = []rune(strings.TrimRight(string(u.query), " "))
 			if i := strings.LastIndexByte(string(u.query), ' '); i >= 0 {
 				u.query = []rune(string(u.query)[:i+1])
 			} else {
 				u.query = nil
 			}
-			u.search()
+			u.searchKeeping(here)
 		case keyToggleDefs:
 			u.showDefs = !u.showDefs
 			u.defWord = "" // force a refetch at the new width
 		case keyClearLine:
+			here := u.word()
 			u.query = nil
-			u.search()
+			u.searchKeeping(here)
 		case keyUp:
 			u.move(u.up())
 		case keyDown:
@@ -258,6 +294,8 @@ func (u *ui) listRows() int {
 	return n
 }
 
+// search re-ranks the list for the current query and puts the selection on
+// the best match, which is what typing another letter should do.
 func (u *ui) search() {
 	// With no query there is nothing to rank, so the cap that keeps sorting
 	// cheap serves no purpose -- drop it and let the whole list be scrolled.
@@ -267,6 +305,54 @@ func (u *ui) search() {
 	}
 	u.results = u.ix.Search(string(u.query), limit)
 	u.sel, u.off = 0, 0
+}
+
+// searchKeeping re-ranks the list but stays on word if it is still in it.
+//
+// This is what deleting does, and it is the difference between the query
+// being a filter and the query being a way of getting somewhere. Typing
+// narrows towards a word, so the best match is where the selection belongs;
+// deleting widens back out, and sending the selection to the top of a hundred
+// thousand words would throw away the place the letters were typed to reach.
+// Keeping it means you can type "zyg", land near zygote, erase it, and go on
+// from there with the arrow keys.
+//
+// A word can fail to survive -- past the first letter the list is capped at
+// maxResults, and a word ranked below that is not in it -- and then this is
+// an ordinary search, which is the same thing it used to do.
+func (u *ui) searchKeeping(word string) {
+	u.search()
+	if word == "" {
+		return
+	}
+	for i := range u.results {
+		if u.results[i].Word == word {
+			u.center(i)
+			return
+		}
+	}
+}
+
+// word reports the highlighted word, or "" when nothing is highlighted.
+func (u *ui) word() string {
+	if u.sel < 0 || u.sel >= len(u.results) {
+		return ""
+	}
+	return u.results[u.sel].Word
+}
+
+// center puts result i in the middle of the window, which is where the eye
+// expects to find a selection that no keypress moved.
+func (u *ui) center(i int) {
+	u.sel = i
+	n := u.listRows()
+	u.off = i - n/2
+	if hi := len(u.results) - n; u.off > hi {
+		u.off = hi
+	}
+	if u.off < 0 {
+		u.off = 0
+	}
 }
 
 func (u *ui) move(d int) {
@@ -316,14 +402,42 @@ func (u *ui) paneWidths(w int) (listW, defW int, show bool) {
 	if !u.showDefs || w < 60 {
 		return w, 0, false
 	}
-	listW = w / 3
-	if listW < 16 {
-		listW = 16
+	// The 16..34 bounds are about the column the words are in. Whatever a
+	// row draws to the left of them -- the ordinal, and in the character
+	// table the character itself -- is added on top, so that turning it on
+	// takes its columns from the definition rather than from the words.
+	lead := u.lead()
+	listW = w/3 + lead
+	if listW < 16+lead {
+		listW = 16 + lead
 	}
-	if listW > 34 {
-		listW = 34
+	if listW > 34+lead {
+		listW = 34 + lead
 	}
 	return listW, w - listW - 3, true
+}
+
+// lead is how many columns a row spends before the selection marker and the
+// word: the ordinal, and the character where there is one.
+func (u *ui) lead() int {
+	n := 0
+	if u.ordW > 0 {
+		n += u.ordW + 1
+	}
+	if u.glyph != nil {
+		n += u.glyphW + 1
+	}
+	return n
+}
+
+// digits is how many columns the largest ordinal needs.
+func digits(n int) int {
+	d := 1
+	for n >= 10 {
+		n /= 10
+		d++
+	}
+	return d
 }
 
 // definition returns the wrapped definition of the highlighted word, fetching
@@ -448,11 +562,23 @@ func (u *ui) draw() {
 // renderRow draws one result, highlighting the runes the query matched.
 func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 	var b bytes.Buffer
+	// The ordinal is where the word is in the list, counted from one -- the
+	// number the word has whatever the search did to the order. It sits
+	// outside the selection highlight because it is a fact about the list
+	// rather than part of the word, and reads better as a dim margin than
+	// as the left end of a reversed bar.
+	if u.ordW > 0 {
+		fmt.Fprintf(&b, "%s%*d %s", sgrDim, u.ordW, r.At+1, sgrReset)
+	}
 	if selected {
 		b.WriteString(sgrSelected)
 		b.WriteString("> ")
 	} else {
 		b.WriteString("  ")
+	}
+	if u.glyph != nil {
+		b.WriteString(u.glyph(r.Word))
+		b.WriteString(" ")
 	}
 
 	hit := make(map[int]bool, len(r.Positions))
@@ -460,7 +586,7 @@ func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 		hit[p] = true
 	}
 
-	budget := w - 2
+	budget := w - u.lead() - 2
 	for i, c := range []rune(r.Word) {
 		if i >= budget {
 			break
@@ -483,6 +609,11 @@ func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 
 // visibleLen measures a string as the terminal will draw it, skipping the SGR
 // escapes that carry no width.
+//
+// Columns, not runes. Most of what is drawn here is one column a rune, but
+// the character table draws Unicode itself: an ideograph takes two columns
+// and a combining mark takes none, and counting either as one leaves the
+// divider between the panes zigzagging down the screen.
 func visibleLen(s string) int {
 	n := 0
 	for i := 0; i < len(s); {
@@ -496,12 +627,12 @@ func visibleLen(s string) int {
 				continue
 			}
 		}
-		_, size := utf8.DecodeRuneInString(s[i:])
+		r, size := utf8.DecodeRuneInString(s[i:])
 		if size == 0 {
 			break
 		}
 		i += size
-		n++
+		n += displaywidth.Rune(r)
 	}
 	return n
 }
@@ -515,7 +646,7 @@ func padVisible(s string, w int) string {
 	if n < w {
 		return s + strings.Repeat(" ", w-n)
 	}
-	// Too long: cut on rune boundaries, counting only visible runes, and
+	// Too long: cut on rune boundaries, counting only visible columns, and
 	// close any color left open by the cut.
 	var b strings.Builder
 	count := 0
@@ -535,11 +666,20 @@ func padVisible(s string, w int) string {
 		if size == 0 {
 			break
 		}
+		// A two-column character straddling the cut has to be dropped
+		// whole, which can leave the row a column short of the width.
+		rw := displaywidth.Rune(r)
+		if count+rw > w {
+			break
+		}
 		b.WriteRune(r)
 		i += size
-		count++
+		count += rw
 	}
 	b.WriteString(sgrReset)
+	if count < w {
+		b.WriteString(strings.Repeat(" ", w-count))
+	}
 	return b.String()
 }
 

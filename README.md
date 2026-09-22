@@ -52,6 +52,20 @@ other-language word lists installed on the system, `:sources` shows which word
 list and dictionaries are in use, and `:licenses` prints the licenses of the
 built-in dictionaries. `:unicode` is below, and `:adlib` after that.
 
+## The picker
+
+Each row is numbered with the word's place in the word list, so the list can
+be used as an index and not only as a filter.
+
+Typing narrows towards a word; erasing widens back out again and leaves the
+selection on the word you had reached, rather than returning to the top. So a
+query is also a way of getting somewhere: type enough of a word to land near
+it, erase it, and go on from there with the arrow keys.
+
+Tab completes the query to the highlighted word, Ctrl-U clears it, and Enter
+prints it and exits. `-f` skips the picker entirely, as does a redirected
+stdout.
+
 ## Characters
 
 A dictionary answers what a word means. `:unicode` answers what a character
@@ -111,9 +125,11 @@ dict :unicode --blocks        # the 353 block names
 ```
 
 Run with no arguments on a terminal, it opens the same interactive picker the
-word list uses, over the character names; what it prints on the way out is
-the character, because knowing that the one you want is called MULTIPLICATION
-SIGN is rarely the end of the errand and having `×` is.
+word list uses, over the character names, with each character drawn beside its
+name — a list of names alone would be a list of descriptions of things you
+cannot see. What it prints on the way out is the character, because knowing
+that the one you want is called MULTIPLICATION SIGN is rarely the end of the
+errand and having `×` is.
 
 The root command takes a character too, so the common case needs no
 subcommand at all — `dict ’` and `dict U+2019` both answer the above. Only

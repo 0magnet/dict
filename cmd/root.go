@@ -137,7 +137,10 @@ func run(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	picked, err := runInteractive(ix, query, source, opts.reverse, defs, !opts.noDefs)
+	picked, err := runInteractive(pick{
+		ix: ix, query: query, source: source,
+		reverse: opts.reverse, defs: defs, showDefs: !opts.noDefs,
+	})
 	if err != nil {
 		return err
 	}

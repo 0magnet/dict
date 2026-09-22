@@ -60,6 +60,7 @@ func (t Tier) String() string {
 // Result is one ranked word.
 type Result struct {
 	Word       string
+	At         int // where Word sits in Index.Words, whatever the ranking did
 	Tier       Tier
 	Distance   int   // edit distance, meaningful for TierEdit
 	Score      int   // fuzzy score, meaningful for TierFuzzy
@@ -113,7 +114,7 @@ func (ix *Index) Search(query string, limit int) []Result {
 		}
 		out := make([]Result, n)
 		for i := 0; i < n; i++ {
-			out[i] = Result{Word: ix.Words[i], Tier: TierAll}
+			out[i] = Result{Word: ix.Words[i], At: i, Tier: TierAll}
 		}
 		return out
 	}
@@ -161,6 +162,10 @@ func (ix *Index) Search(query string, limit int) []Result {
 			var buckets [numTiers][]Result
 			for i := lo; i < hi; i++ {
 				if r, ok := ix.classify(i, q, qlow, qs, qlows, fold, budget, qmask); ok {
+					// Filled in here rather than at each of classify's
+					// seven returns, which is also the only place the
+					// word's own index is still in hand.
+					r.At = i
 					buckets[r.Tier] = append(buckets[r.Tier], r)
 				}
 			}

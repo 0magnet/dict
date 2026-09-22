@@ -205,6 +205,10 @@ func TestUnicodeBlocks(t *testing.T) {
 // of those conventions, so Clean is a no-op on them -- but "is a no-op" is a
 // claim about two pieces of code that do not know about each other, and it
 // would fail silently and invisibly if either changed.
+//
+// The entry includes the character itself, which is the part with something
+// to lose: the sample covers the brackets and braces Clean rewrites, and a
+// character that is one of them is a character someone will look up.
 func TestCleanLeavesCharacterFacts(t *testing.T) {
 	tab, err := data.Unicode()
 	if err != nil {
@@ -220,7 +224,7 @@ func TestCleanLeavesCharacterFacts(t *testing.T) {
 
 	for _, r := range sample {
 		c, _ := tab.Lookup(r)
-		text := strings.Join(charFacts(c), "\n")
+		text := charEntry(c)
 		if got := dictdb.Clean(text); got != text {
 			t.Errorf("Clean changed the facts for %s:\n%q\nbecame\n%q", unidata.Code(r), text, got)
 		}
