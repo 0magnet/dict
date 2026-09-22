@@ -411,26 +411,56 @@ func tailName(ix *match.Index, words []string) string {
 	return ""
 }
 
-// charGlyph draws the character beside its name, and nothing at all beside a
-// word: a blank gutter down the length of the word list would be three
-// columns spent on the part of the list that is not there.
+// exactName resolves a list entry, which is a character name spelled exactly
+// as Unicode spells it and nothing else.
 //
-// The name has to be spelled the way Unicode spells it, capitals and all.
-// ByName is deliberately forgiving -- it is what reads what a person typed --
-// and a row here is not something a person typed, it is an entry taken from
-// the list. Requiring the exact name is what stops the word "bell" from
-// being decorated with a character it merely sounds like.
-func charGlyph() func(string) string {
+// ByName is deliberately forgiving, because it is what reads what a person
+// typed. An entry is not something a person typed; it is a row taken from the
+// list. Requiring the exact name is what keeps the word "bell" from turning
+// into a character it merely sounds like.
+func exactName(tab *unidata.Table, name string) (unidata.Char, bool) {
+	c, ok := tab.ByName(name)
+	if !ok || c.Name != name {
+		return unidata.Char{}, false
+	}
+	return c, true
+}
+
+// charDisplay draws an entry that names a character as that character, and
+// leaves an ordinary word as it is. This is what makes the character the
+// headword of its own row; its name becomes the definition.
+func charDisplay() func(string) string {
 	tab, err := data.Unicode()
 	if err != nil {
 		return nil
 	}
 	return func(name string) string {
-		c, ok := tab.ByName(name)
-		if !ok || c.Name != name {
+		c, ok := exactName(tab, name)
+		if !ok {
 			return ""
 		}
-		return pad2(unidata.Glyph(c))
+		return unidata.Glyph(c)
+	}
+}
+
+// charValue is what choosing a character row yields: the character, not the
+// drawing of it.
+//
+// Glyph is the safe form -- a picture for a control character, a dotted
+// circle under a combining mark, a space where there is nothing to draw --
+// which is what a terminal needs and is not what anyone wants pasted. What
+// comes out of the picker is going somewhere else, so it is the real thing.
+func charValue() func(string) string {
+	tab, err := data.Unicode()
+	if err != nil {
+		return nil
+	}
+	return func(name string) string {
+		c, ok := exactName(tab, name)
+		if !ok {
+			return ""
+		}
+		return string(c.Code)
 	}
 }
 
@@ -459,9 +489,9 @@ func characterSet() *dictdb.Set {
 // made to look like a dictionary at all: the alternative was a second
 // full-screen interface that would have drifted from the first.
 //
-// What it prints on the way out is the character, not its name. Finding out
-// that the character wanted is called MULTIPLICATION SIGN is rarely the end
-// of the errand; having × is.
+// What it prints on the way out is the character, not its name -- see
+// pick.value. Finding out that the character wanted is called MULTIPLICATION
+// SIGN is rarely the end of the errand; having × is.
 func pickChar(tab *unidata.Table, query string) error {
 	ix := match.NewIndex(tab.Names())
 	set := characterSet()
@@ -469,10 +499,7 @@ func pickChar(tab *unidata.Table, query string) error {
 	picked, err := runInteractive(pick{
 		ix: ix, query: query, source: "unicode " + tab.Version(),
 		reverse: uniOpts.reverse, defs: set, showDefs: true,
-		// Without this the picker lists names and shows no characters,
-		// which is a list of descriptions of things you cannot see --
-		// and seeing the character is the entire errand.
-		glyph: charGlyph(), glyphW: 2,
+		display: charDisplay(), value: charValue(),
 	})
 	if err != nil {
 		return err
@@ -480,12 +507,7 @@ func pickChar(tab *unidata.Table, query string) error {
 	if picked == "" {
 		return exitNoSelection{}
 	}
-	c, ok := tab.ByName(picked)
-	if !ok {
-		println(picked)
-		return nil
-	}
-	println(string(c.Code))
+	println(picked)
 	return nil
 }
 
@@ -528,11 +550,7 @@ func (u unicodeSource) Lookup(word string) ([]string, error) {
 // is a character; matching them loosely would append a character to the
 // definition of an ordinary word every time the two happened to agree.
 func (u unicodeSource) exact(word string) (unidata.Char, bool) {
-	c, ok := u.tab.ByName(word)
-	if !ok || c.Name != word {
-		return unidata.Char{}, false
-	}
-	return c, true
+	return exactName(u.tab, word)
 }
 
 // charEntry is a character's whole entry as the definition pane shows it: the

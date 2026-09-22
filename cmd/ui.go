@@ -46,10 +46,8 @@ type ui struct {
 	cols       int
 	reverse    bool // prompt on top, list downward, as with fzf --layout=reverse
 
-	// what a row draws to the left of the word
-	ordW   int // columns the ordinal takes; see pick.glyph for the rest
-	glyph  func(word string) string
-	glyphW int
+	ordW    int // columns the ordinal takes
+	display func(word string) string
 
 	// definition pane
 	defs     *dictdb.Set
@@ -142,15 +140,21 @@ type pick struct {
 	tailDefs *dictdb.Set
 	showDefs bool
 
-	// glyph, when set, is drawn between the selection marker and the word:
-	// for the character table it is the character itself, without which the
-	// list is a list of descriptions of things you cannot see.
+	// display and value are how an entry that is not a word is presented.
 	//
-	// It must come back exactly glyphW columns wide and must contain no
-	// escape sequence -- a selected row is drawn in reverse video, and a
-	// reset in the middle of it would end the highlight early.
-	glyph  func(word string) string
-	glyphW int
+	// The character table is searched by name, because a name is the only
+	// handle anyone has on a character they cannot type. But the name is
+	// not the thing being looked up, any more than a definition is: the
+	// character is. So for those entries display draws the character in the
+	// list, and the name becomes the first line of the definition -- the
+	// same shape every other row has, a headword and what it means.
+	//
+	// display returns "" for an entry to be drawn as it stands, and value
+	// nil means an entry is its own answer. What display returns must
+	// contain no escape sequence: a selected row is drawn in reverse video,
+	// and a reset in the middle of it would end the highlight early.
+	display func(word string) string
+	value   func(word string) string
 }
 
 // runInteractive drives the interactive search and returns the chosen word,
@@ -176,7 +180,7 @@ func runInteractive(p pick) (string, error) {
 		out: tty, size: size, ix: p.ix, sourceName: name, total: len(p.ix.Words),
 		query: []rune(p.query), reverse: p.reverse,
 		defs: p.defs, tailDefs: p.tailDefs, showDefs: p.showDefs,
-		ordW: digits(len(p.ix.Words)), glyph: p.glyph, glyphW: p.glyphW,
+		ordW: digits(len(p.ix.Words)), display: p.display,
 	}
 
 	// Restore the terminal on the way out however we leave, including panics.
@@ -235,7 +239,16 @@ func runInteractive(p pick) (string, error) {
 			return "", nil
 		case keyEnter:
 			if u.sel < len(u.results) {
-				return u.results[u.sel].Word, nil
+				// What comes back is the answer, not the way the answer was
+				// found. For a character the name was only the handle: it
+				// is the character that is wanted.
+				w := u.results[u.sel].Word
+				if p.value != nil {
+					if v := p.value(w); v != "" {
+						w = v
+					}
+				}
+				return w, nil
 			}
 			return "", nil
 		case keyTab:
@@ -429,18 +442,12 @@ func (u *ui) paneWidths(w int) (listW, defW int, show bool) {
 	return listW, w - listW - 3, true
 }
 
-// lead is the most a row can spend before the word: the ordinal, and the
-// character on the rows that have one. The pane is sized for the widest row
-// rather than per row, so that the divider is straight.
+// lead is what a row spends before the selection marker: the ordinal.
 func (u *ui) lead() int {
-	n := 0
 	if u.ordW > 0 {
-		n += u.ordW + 1
+		return u.ordW + 1
 	}
-	if u.glyph != nil {
-		n += u.glyphW + 1
-	}
-	return n
+	return 0
 }
 
 // digits is how many columns the largest ordinal needs.
@@ -491,6 +498,14 @@ func (u *ui) definition(width int) []string {
 	}
 
 	var lines []string
+	// A row that draws something other than its entry has put the entry out
+	// of sight, and for the character table the entry is the name. It leads
+	// the definition, which is where a headword goes and what the name has
+	// become.
+	if u.display != nil && u.display(word) != "" {
+		lines = append(lines, dictdb.Wrap(word, width)...)
+		lines = append(lines, "")
+	}
 	for i, r := range res {
 		if i > 0 {
 			lines = append(lines, "")
@@ -593,35 +608,32 @@ func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 	if u.ordW > 0 {
 		fmt.Fprintf(&b, "%s%*d %s", sgrDim, u.ordW, r.At+1, sgrReset)
 	}
-	lead := 0
-	if u.ordW > 0 {
-		lead = u.ordW + 1
-	}
 	if selected {
 		b.WriteString(sgrSelected)
 		b.WriteString("> ")
 	} else {
 		b.WriteString("  ")
 	}
-	// Only the rows that have a character get the column for one. A blank
-	// gutter down the length of the word list would be three columns spent
-	// on the part of the list that is not there, and where the two meet the
-	// step between them reads as the boundary it is.
-	if u.glyph != nil {
-		if cell := u.glyph(r.Word); cell != "" {
-			b.WriteString(cell)
-			b.WriteString(" ")
-			lead += u.glyphW + 1
+
+	// What is drawn is the entry itself for a word, and the character for a
+	// character. Only a word is highlighted: the match positions are rune
+	// indices into the name that was searched, and the name is not what is
+	// on the row.
+	text, hit := r.Word, map[int]bool(nil)
+	if u.display != nil {
+		if d := u.display(r.Word); d != "" {
+			text = d
+		}
+	}
+	if text == r.Word {
+		hit = make(map[int]bool, len(r.Positions))
+		for _, p := range r.Positions {
+			hit[p] = true
 		}
 	}
 
-	hit := make(map[int]bool, len(r.Positions))
-	for _, p := range r.Positions {
-		hit[p] = true
-	}
-
-	budget := w - lead - 2
-	for i, c := range []rune(r.Word) {
+	budget := w - u.lead() - 2
+	for i, c := range []rune(text) {
 		if i >= budget {
 			break
 		}

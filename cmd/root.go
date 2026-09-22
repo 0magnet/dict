@@ -117,7 +117,9 @@ func run(cmd *cobra.Command, args []string) error {
 
 	query := strings.Join(args, " ")
 	ix, defs := index(words), dictionaries()
-	glyph := charGlyph()
+	// A character is drawn as itself and chosen as itself; its name is only
+	// how it was found. A word is both, so these leave one alone.
+	display, value := charDisplay(), charValue()
 
 	if opts.random || opts.randomDef {
 		return printRandom(ix, defs, query)
@@ -133,7 +135,7 @@ func run(cmd *cobra.Command, args []string) error {
 	// that `dict recieve | head` behaves the way a pipeline should.
 	interactive := !opts.filter && host.Interactive
 	if !interactive {
-		printMatches(ix, query)
+		printMatches(ix, query, display)
 		return nil
 	}
 
@@ -141,7 +143,7 @@ func run(cmd *cobra.Command, args []string) error {
 		ix: ix, query: query, source: source, tail: tailName(ix, words),
 		tailDefs: characterSet(),
 		reverse:  opts.reverse, defs: defs, showDefs: !opts.noDefs,
-		glyph: glyph, glyphW: 2,
+		display: display, value: value,
 	})
 	if err != nil {
 		return err
@@ -200,8 +202,18 @@ func printDefinition(ix *match.Index, defs *dictdb.Set, query string) error {
 	return nil
 }
 
-func printMatches(ix *match.Index, query string) {
+// printMatches is the picker's list without the picker, so it draws what the
+// picker draws: display, not value. The difference is the whole of what
+// display is for -- value hands back the real character, which is what is
+// wanted when one has been chosen and is not what belongs in a listing, where
+// U+0000 would be an actual NUL byte in the pipe.
+func printMatches(ix *match.Index, query string, display func(string) string) {
 	for _, r := range ix.Search(query, opts.limit) {
+		if display != nil {
+			if d := display(r.Word); d != "" {
+				r.Word = d
+			}
+		}
 		if opts.showTier {
 			printf("%-24s %s", r.Word, r.Tier)
 			if r.Tier == match.TierEdit {

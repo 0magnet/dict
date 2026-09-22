@@ -55,12 +55,21 @@ built-in dictionaries. `:unicode` is below, and `:adlib` after that.
 ## The picker
 
 Each row is numbered with its place in the list, so it can be used as an index
-and not only as a filter. The list does not end at `Zzz`: the 41,293 Unicode
-character names follow the words, each drawn beside its character, so you can
-scroll off the end of the dictionary straight into `␀ NULL`. They are a tail,
-ranked below every word however well they match, so no spelling lookup can
-lose to a character name — they are simply what is there once the words run
-out. `dict -r` stays among the words too.
+and not only as a filter.
+
+The list does not end at `Zzz`. The 41,293 Unicode characters follow the
+words, so you can scroll off the end of the dictionary straight into `␀`. A
+character is its own headword — the row is the character, and its name is the
+first line of the definition, the same shape every other row has. It is
+searched by name, because a name is the only handle anyone has on a character
+they cannot type, but the name is no more the thing being looked up than a
+definition is.
+
+The characters are a tail, ranked below every word however well they match, so
+no spelling lookup can lose to a character name; they are simply what is there
+once the words run out. `dict -r` stays among the words. What Enter gives you
+is the character itself, ready to paste — `dict -f` prints the safe drawing of
+it instead, since a listing should not put a NUL byte in a pipe.
 
 Typing narrows towards a word; erasing widens back out again and leaves the
 selection on the word you had reached, rather than returning to the top. So a
@@ -130,11 +139,10 @@ dict :unicode --blocks        # the 353 block names
 ```
 
 Run with no arguments on a terminal, it opens the same interactive picker the
-word list uses, over the character names, with each character drawn beside its
-name — a list of names alone would be a list of descriptions of things you
-cannot see. What it prints on the way out is the character, because knowing
-that the one you want is called MULTIPLICATION SIGN is rarely the end of the
-errand and having `×` is.
+word list uses, restricted to the characters. As there, the row is the
+character and its name is the definition, and what it prints on the way out is
+the character — knowing that the one you want is called MULTIPLICATION SIGN is
+rarely the end of the errand, and having `×` is.
 
 The root command takes a character too, so the common case needs no
 subcommand at all — `dict ’` and `dict U+2019` both answer the above. Only

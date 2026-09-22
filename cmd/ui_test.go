@@ -189,26 +189,46 @@ func TestRowShowsTheOrdinal(t *testing.T) {
 	}
 }
 
-// TestRowShowsTheGlyph covers the character table's extra column, including
-// that a two-column character still leaves the row the width it claims --
-// otherwise the divider between the panes zigzags.
-func TestRowShowsTheGlyph(t *testing.T) {
-	glyphs := map[string]string{"NARROW": "x ", "WIDE": "中"}
+// TestRowDrawsWhatTheEntryStandsFor: an entry that names a character is drawn
+// as that character, and an ordinary word is drawn as itself. A two-column
+// character must still leave the row the width it claims, or the divider
+// between the panes zigzags.
+func TestRowDrawsWhatTheEntryStandsFor(t *testing.T) {
+	stands := map[string]string{"NARROW": "x", "WIDE": "中"}
 	u := &ui{
-		ix:   match.NewIndex([]string{"NARROW", "WIDE"}),
-		rows: 12, total: 2, ordW: 1,
-		glyph:  func(w string) string { return glyphs[w] },
-		glyphW: 2,
+		ix:   match.NewIndex([]string{"NARROW", "WIDE", "word"}),
+		rows: 12, total: 3, ordW: 1,
+		display: func(w string) string { return stands[w] },
 	}
 	u.search()
-	for i, want := range []string{"1   x  NARROW", "2   中 WIDE"} {
-		row := u.renderRow(u.results[i], false, 40)
+	for i, want := range []string{"1 > x", "2   中", "3   word"} {
+		row := u.renderRow(u.results[i], i == 0, 40)
 		if got := stripSGR(row); got != want {
 			t.Errorf("row %d = %q, want %q", i, got, want)
 		}
 		if got := visibleLen(padVisible(row, 20)); got != 20 {
 			t.Errorf("row %d padded to %d columns, want 20", i, got)
 		}
+	}
+}
+
+// TestSubstitutedRowIsNotHighlighted: the match positions are rune indices
+// into the name that was searched, and on a row drawing the character in its
+// place they would color the wrong thing -- or, past the end of a one-rune
+// row, nothing at all while still emitting the escapes.
+func TestSubstitutedRowIsNotHighlighted(t *testing.T) {
+	u := &ui{
+		ix:   match.NewIndex([]string{"SNOWMAN"}),
+		rows: 12, total: 1, ordW: 1,
+		display: func(string) string { return "☃" },
+	}
+	u.query = []rune("snowman")
+	u.search()
+	if len(u.results) != 1 || len(u.results[0].Positions) == 0 {
+		t.Fatal("expected an exact match carrying highlight positions")
+	}
+	if row := u.renderRow(u.results[0], false, 40); strings.Contains(row, sgrMatch) {
+		t.Errorf("the character row carries match highlighting: %q", row)
 	}
 }
 
