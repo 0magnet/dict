@@ -54,8 +54,13 @@ built-in dictionaries. `:unicode` is below, and `:adlib` after that.
 
 ## The picker
 
-Each row is numbered with the word's place in the word list, so the list can
-be used as an index and not only as a filter.
+Each row is numbered with its place in the list, so it can be used as an index
+and not only as a filter. The list does not end at `Zzz`: the 41,293 Unicode
+character names follow the words, each drawn beside its character, so you can
+scroll off the end of the dictionary straight into `␀ NULL`. They are a tail,
+ranked below every word however well they match, so no spelling lookup can
+lose to a character name — they are simply what is there once the words run
+out. `dict -r` stays among the words too.
 
 Typing narrows towards a word; erasing widens back out again and leaves the
 selection on the word you had reached, rather than returning to the top. So a

@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"context"
+	"slices"
 	"strings"
 	"testing"
 
@@ -324,5 +325,104 @@ func TestUnicodeDashIsStdin(t *testing.T) {
 	// It must not be mistaken for a character or a name to search for.
 	if strings.Contains(out, "HYPHEN-MINUS") {
 		t.Error(`"-" was read as the character rather than as stdin`)
+	}
+}
+
+// TestCharactersAreATailOfTheWordList covers the join: the characters are in
+// the same list as the words, after the last of them, and they never come
+// first. That last part is the one that matters -- dict's premise is that a
+// misspelling finds the word it meant, and a list of 41,293 capitalized
+// names is exactly the thing that could quietly start winning.
+func TestCharactersAreATailOfTheWordList(t *testing.T) {
+	words := []string{"snowman", "snowmen", "bell", "Bell", "zygote", "Zzz"}
+	ix := index(words)
+	if ix.Primary != len(words) {
+		t.Fatalf("Primary = %d, want %d", ix.Primary, len(words))
+	}
+	if len(ix.Words) <= len(words) {
+		t.Fatal("no characters were appended")
+	}
+	if got := ix.Words[len(words)]; got != "NULL" {
+		t.Errorf("the entry after the last word is %q, want NULL", got)
+	}
+
+	// A lowercase query is case-folded, so the word and the character name
+	// both match and the word has to win. An uppercase one is not folded --
+	// dict is smart-case, as fzf and ripgrep are -- so SNOWMAN really is
+	// asking for the character and gets it. Both are deliberate.
+	for _, q := range []string{"snowman", "bell", "zygote", "snowmn", "znowman"} {
+		res := ix.Search(q, 0)
+		if len(res) == 0 {
+			t.Errorf("%q matched nothing", q)
+			continue
+		}
+		if res[0].At >= ix.Primary {
+			t.Errorf("%q is answered by the character %q before any word", q, res[0].Word)
+		}
+	}
+	for _, q := range []string{"SNOWMAN", "BELL"} {
+		res := ix.Search(q, 0)
+		if len(res) == 0 || res[0].Word != q {
+			t.Errorf("the uppercase query %q did not find the character of that name", q)
+		}
+	}
+}
+
+// TestRandomStaysInTheWords: -r reaches into the list without being asked for
+// anything in particular, which is the one place the tail could turn up
+// unbidden.
+func TestRandomStaysInTheWords(t *testing.T) {
+	words := []string{"snowman", "zygote", "bell"}
+	ix := index(words)
+	for _, query := range []string{"", "bell"} {
+		for _, w := range randomPool(ix, query) {
+			if !slices.Contains(words, w) {
+				t.Errorf("randomPool(%q) offered %q, which is not a word", query, w)
+			}
+		}
+	}
+}
+
+// TestCharacterNamesNeedTheirExactSpelling is what keeps the character table
+// out of the way now that it is in the same lookup chain as the
+// dictionaries: the word "bell" must not pick up the facts about U+1F514.
+func TestCharacterNamesNeedTheirExactSpelling(t *testing.T) {
+	tab, err := data.Unicode()
+	if err != nil {
+		t.Fatal(err)
+	}
+	src := unicodeSource{tab}
+	for _, tc := range []struct {
+		word string
+		want bool
+	}{
+		{"BELL", true},
+		{"bell", false},
+		{"Bell", false},
+		{"SNOWMAN", true},
+		{"snowman", false},
+		{"EURO SIGN", true},
+		{"euro sign", false},
+		{"nothing is called this", false},
+	} {
+		if got := src.Has(tc.word); got != tc.want {
+			t.Errorf("Has(%q) = %v, want %v", tc.word, got, tc.want)
+		}
+	}
+}
+
+// TestDictionariesAnswerACharacterName checks the chain end to end, by the
+// route the picker's definition pane takes for a row in the tail.
+func TestDictionariesAnswerACharacterName(t *testing.T) {
+	res := characterSet().Define("SNOWMAN")
+	if len(res) != 1 {
+		t.Fatalf("Define(SNOWMAN) gave %d entries, want 1", len(res))
+	}
+	if !strings.Contains(res[0].Text, "U+2603") || !strings.Contains(res[0].Text, "☃") {
+		t.Errorf("the entry is not about the character:\n%s", res[0].Text)
+	}
+	// And a word is not one of its headwords.
+	if got := characterSet().Define("snowman"); len(got) != 0 {
+		t.Errorf("the character table answered for the word snowman: %v", got)
 	}
 }

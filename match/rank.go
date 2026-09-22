@@ -72,6 +72,11 @@ type Result struct {
 // Index holds a word list prepared for repeated queries.
 type Index struct {
 	Words []string
+
+	// Primary is how many of Words are the list proper. Anything from
+	// there on is the tail, and ranks below all of it; see NewIndexWithTail.
+	Primary int
+
 	runes [][]rune
 	lower [][]rune
 	masks []uint32 // set of distinct letters in each word, for a cheap reject
@@ -79,12 +84,30 @@ type Index struct {
 
 // NewIndex prepares words for searching. The folded forms are computed once
 // here rather than per keystroke.
-func NewIndex(words []string) *Index {
+func NewIndex(words []string) *Index { return newIndex(words, len(words)) }
+
+// NewIndexWithTail prepares head followed by tail, where every entry in tail
+// ranks below every entry in head however well it matches.
+//
+// dict uses it to put the Unicode character names after the words. A
+// character name is a worse answer to a misspelling than any word is --
+// "recieve" must go on finding "receive" and not RECYCLING SYMBOL -- but it
+// is a better answer than nothing, and keeping the two lists apart meant the
+// characters were only findable by someone who already knew they existed.
+func NewIndexWithTail(head, tail []string) *Index {
+	all := make([]string, 0, len(head)+len(tail))
+	all = append(all, head...)
+	all = append(all, tail...)
+	return newIndex(all, len(head))
+}
+
+func newIndex(words []string, primary int) *Index {
 	ix := &Index{
-		Words: words,
-		runes: make([][]rune, len(words)),
-		lower: make([][]rune, len(words)),
-		masks: make([]uint32, len(words)),
+		Words:   words,
+		Primary: primary,
+		runes:   make([][]rune, len(words)),
+		lower:   make([][]rune, len(words)),
+		masks:   make([]uint32, len(words)),
 	}
 	for i, w := range words {
 		r := []rune(w)
@@ -143,7 +166,12 @@ func (ix *Index) Search(query string, limit int) []Result {
 	// but lets the work stop as soon as the limit is filled. For a one-letter
 	// query that means sorting a few thousand prefix matches instead of a
 	// hundred thousand fuzzy ones.
-	parts := make([][numTiers][]Result, workers)
+	//
+	// The buckets run [head tiers..., tail tiers...] rather than one set of
+	// tiers, which is the whole of how a tail ranks below a head: gathering
+	// them in order empties every tier of the words before it reaches the
+	// best-matching character name.
+	parts := make([][2 * numTiers][]Result, workers)
 	chunk := (len(ix.Words) + workers - 1) / workers
 
 	var wg sync.WaitGroup
@@ -159,14 +187,18 @@ func (ix *Index) Search(query string, limit int) []Result {
 		wg.Add(1)
 		go func(w, lo, hi int) {
 			defer wg.Done()
-			var buckets [numTiers][]Result
+			var buckets [2 * numTiers][]Result
 			for i := lo; i < hi; i++ {
 				if r, ok := ix.classify(i, q, qlow, qs, qlows, fold, budget, qmask); ok {
 					// Filled in here rather than at each of classify's
 					// seven returns, which is also the only place the
 					// word's own index is still in hand.
 					r.At = i
-					buckets[r.Tier] = append(buckets[r.Tier], r)
+					b := int(r.Tier)
+					if i >= ix.Primary {
+						b += numTiers
+					}
+					buckets[b] = append(buckets[b], r)
 				}
 			}
 			parts[w] = buckets
@@ -175,13 +207,13 @@ func (ix *Index) Search(query string, limit int) []Result {
 	wg.Wait()
 
 	var all []Result
-	for tier := Tier(0); tier < numTiers; tier++ {
+	for b := 0; b < 2*numTiers; b++ {
 		if limit > 0 && len(all) >= limit {
 			break
 		}
 		var bucket []Result
 		for w := range parts {
-			bucket = append(bucket, parts[w][tier]...)
+			bucket = append(bucket, parts[w][b]...)
 		}
 		if len(bucket) == 0 {
 			continue

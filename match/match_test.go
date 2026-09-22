@@ -224,3 +224,67 @@ func BenchmarkEmptyQuery(b *testing.B) {
 		ix.Search("", 0)
 	}
 }
+
+// TestTailNeverOutranksHead is the whole contract of NewIndexWithTail: dict
+// puts the Unicode character names in the same list as the words, and a
+// character name must never be the answer to a misspelling while any word
+// still matches. An exact hit in the tail is the strongest case there is,
+// and it still comes last.
+func TestTailNeverOutranksHead(t *testing.T) {
+	head := []string{"snowman", "snowmen", "showman"}
+	tail := []string{"SNOWMAN", "SNOWMAN WITHOUT SNOW"}
+	ix := match.NewIndexWithTail(head, tail)
+
+	if ix.Primary != len(head) {
+		t.Fatalf("Primary = %d, want %d", ix.Primary, len(head))
+	}
+	if len(ix.Words) != len(head)+len(tail) {
+		t.Fatalf("Words = %d entries, want %d", len(ix.Words), len(head)+len(tail))
+	}
+
+	for _, q := range []string{"snowman", "SNOWMAN", "snowmn", "snow"} {
+		res := ix.Search(q, 0)
+		if len(res) == 0 {
+			t.Errorf("%q matched nothing", q)
+			continue
+		}
+		seenTail := false
+		for _, r := range res {
+			if r.At >= ix.Primary {
+				seenTail = true
+				continue
+			}
+			if seenTail {
+				t.Errorf("%q: word %q ranked below a character name", q, r.Word)
+			}
+		}
+	}
+
+	// The empty query is the list itself, in order: the words, and then the
+	// characters after the last of them.
+	all := ix.Search("", 0)
+	if len(all) != len(ix.Words) {
+		t.Fatalf("empty query gave %d of %d", len(all), len(ix.Words))
+	}
+	if all[len(head)-1].Word != "showman" || all[len(head)].Word != "SNOWMAN" {
+		t.Errorf("the list does not run from the words into the names: ...%q, %q...",
+			all[len(head)-1].Word, all[len(head)].Word)
+	}
+}
+
+// TestResultKnowsItsPlace covers Result.At, which the picker numbers its rows
+// with and randomPool uses to stay out of the tail.
+func TestResultKnowsItsPlace(t *testing.T) {
+	words := []string{"alpha", "beta", "gamma", "delta"}
+	ix := match.NewIndex(words)
+	for _, r := range ix.Search("beta", 0) {
+		if ix.Words[r.At] != r.Word {
+			t.Errorf("%q says it is at %d, where %q is", r.Word, r.At, ix.Words[r.At])
+		}
+	}
+	for i, r := range ix.Search("", 0) {
+		if r.At != i {
+			t.Errorf("unranked result %d says it is at %d", i, r.At)
+		}
+	}
+}

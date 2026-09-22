@@ -382,6 +382,76 @@ func printBlocks(tab *unidata.Table) {
 	}
 }
 
+// index is the list dict searches: the words, and then the Unicode character
+// names after them.
+//
+// The names are a tail, which is what keeps this from changing any answer
+// dict gives about a word. NewIndexWithTail ranks every name below every
+// word however well it matches, so a transposed "receive" still finds it and not
+// RECYCLING SYMBOL; the characters are simply what is there once the words
+// run out. With no query that is literally what you see -- the list runs on
+// past Zzz into U+0000.
+//
+// Without the table the words are still the program, so a failure to read it
+// is not a failure to run.
+func index(words []string) *match.Index {
+	tab, err := data.Unicode()
+	if err != nil {
+		return match.NewIndex(words)
+	}
+	return match.NewIndexWithTail(words, tab.Names())
+}
+
+// tailName is what the status line calls the tail, and nothing when the
+// table could not be read and there is no tail to name.
+func tailName(ix *match.Index, words []string) string {
+	if ix.Primary < len(ix.Words) && ix.Primary == len(words) {
+		return unicodeName
+	}
+	return ""
+}
+
+// charGlyph draws the character beside its name, and nothing at all beside a
+// word: a blank gutter down the length of the word list would be three
+// columns spent on the part of the list that is not there.
+//
+// The name has to be spelled the way Unicode spells it, capitals and all.
+// ByName is deliberately forgiving -- it is what reads what a person typed --
+// and a row here is not something a person typed, it is an entry taken from
+// the list. Requiring the exact name is what stops the word "bell" from
+// being decorated with a character it merely sounds like.
+func charGlyph() func(string) string {
+	tab, err := data.Unicode()
+	if err != nil {
+		return nil
+	}
+	return func(name string) string {
+		c, ok := tab.ByName(name)
+		if !ok || c.Name != name {
+			return ""
+		}
+		return pad2(unidata.Glyph(c))
+	}
+}
+
+// unicodeDict loads the character table as a dictionary, when one is asked
+// for. Nothing reads the table until a character is actually looked at.
+func unicodeDict() (dictdb.Dictionary, error) {
+	tab, err := data.Unicode()
+	if err != nil {
+		return nil, err
+	}
+	return unicodeSource{tab}, nil
+}
+
+// characterSet is the character table on its own, which is what the rows in
+// the word list's tail are looked up in. See ui.definition.
+func characterSet() *dictdb.Set {
+	set := &dictdb.Set{}
+	set.Add(unicodeName, unicodeDict)
+	return set
+}
+
 // pickChar runs the interactive picker over the character names.
 //
 // It is the same picker the word list uses, given a different list and a
@@ -394,8 +464,7 @@ func printBlocks(tab *unidata.Table) {
 // of the errand; having × is.
 func pickChar(tab *unidata.Table, query string) error {
 	ix := match.NewIndex(tab.Names())
-	set := &dictdb.Set{}
-	set.Add(unicodeName, func() (dictdb.Dictionary, error) { return unicodeSource{tab}, nil })
+	set := characterSet()
 
 	picked, err := runInteractive(pick{
 		ix: ix, query: query, source: "unicode " + tab.Version(),
@@ -403,14 +472,7 @@ func pickChar(tab *unidata.Table, query string) error {
 		// Without this the picker lists names and shows no characters,
 		// which is a list of descriptions of things you cannot see --
 		// and seeing the character is the entire errand.
-		glyph: func(name string) string {
-			c, ok := tab.ByName(name)
-			if !ok {
-				return "  "
-			}
-			return pad2(unidata.Glyph(c))
-		},
-		glyphW: 2,
+		glyph: charGlyph(), glyphW: 2,
 	})
 	if err != nil {
 		return err
@@ -450,11 +512,27 @@ func (u unicodeSource) Title() string {
 }
 
 func (u unicodeSource) Lookup(word string) ([]string, error) {
-	c, ok := u.tab.ByName(word)
+	c, ok := u.exact(word)
 	if !ok {
 		return nil, nil
 	}
 	return []string{charEntry(c)}, nil
+}
+
+// exact resolves a headword, which is a character name spelled exactly as
+// Unicode spells it and nothing else.
+//
+// This is the whole of what keeps the character table out of the way of the
+// dictionaries now that it is in the same lookup chain. The word list has
+// "bell" and "Bell" in it and Unicode has BELL, and only the third of those
+// is a character; matching them loosely would append a character to the
+// definition of an ordinary word every time the two happened to agree.
+func (u unicodeSource) exact(word string) (unidata.Char, bool) {
+	c, ok := u.tab.ByName(word)
+	if !ok || c.Name != word {
+		return unidata.Char{}, false
+	}
+	return c, true
 }
 
 // charEntry is a character's whole entry as the definition pane shows it: the
@@ -477,7 +555,7 @@ func charEntry(c unidata.Char) string {
 }
 
 func (u unicodeSource) Has(word string) bool {
-	_, ok := u.tab.ByName(word)
+	_, ok := u.exact(word)
 	return ok
 }
 

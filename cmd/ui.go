@@ -53,6 +53,7 @@ type ui struct {
 
 	// definition pane
 	defs     *dictdb.Set
+	tailDefs *dictdb.Set // asked instead, for a row in the index's tail
 	showDefs bool
 	defWord  string   // word the cached definition belongs to
 	defWidth int      // width it was wrapped for
@@ -135,8 +136,10 @@ type pick struct {
 	ix       *match.Index
 	query    string
 	source   string
+	tail     string // what to call ix's tail in the status line, if it has one
 	reverse  bool
 	defs     *dictdb.Set
+	tailDefs *dictdb.Set
 	showDefs bool
 
 	// glyph, when set, is drawn between the selection marker and the word:
@@ -161,9 +164,18 @@ func runInteractive(p pick) (string, error) {
 		return "", err
 	}
 
+	// The count in the status line is of the whole list, so the name beside
+	// it has to be of the whole list too -- "words 165278" would be a claim
+	// about the word list that is 41,293 too large.
+	name := filepath.Base(p.source)
+	if p.tail != "" {
+		name += " + " + p.tail
+	}
+
 	u := &ui{
-		out: tty, size: size, ix: p.ix, sourceName: filepath.Base(p.source), total: len(p.ix.Words),
-		query: []rune(p.query), reverse: p.reverse, defs: p.defs, showDefs: p.showDefs,
+		out: tty, size: size, ix: p.ix, sourceName: name, total: len(p.ix.Words),
+		query: []rune(p.query), reverse: p.reverse,
+		defs: p.defs, tailDefs: p.tailDefs, showDefs: p.showDefs,
 		ordW: digits(len(p.ix.Words)), glyph: p.glyph, glyphW: p.glyphW,
 	}
 
@@ -417,8 +429,9 @@ func (u *ui) paneWidths(w int) (listW, defW int, show bool) {
 	return listW, w - listW - 3, true
 }
 
-// lead is how many columns a row spends before the selection marker and the
-// word: the ordinal, and the character where there is one.
+// lead is the most a row can spend before the word: the ordinal, and the
+// character on the rows that have one. The pane is sized for the widest row
+// rather than per row, so that the divider is straight.
 func (u *ui) lead() int {
 	n := 0
 	if u.ordW > 0 {
@@ -454,7 +467,17 @@ func (u *ui) definition(width int) []string {
 	}
 	u.defWord, u.defWidth = word, width
 
-	res := u.defs.Define(word)
+	// A row in the tail is asked of the tail's own source first. The
+	// character named SNOWMAN and the word snowman are different entries
+	// that happen to be spelled alike, and on the character's row it is the
+	// character that has to answer -- the dictionaries would otherwise get
+	// there first and define the word, which is the question the row above
+	// it is already answering.
+	set := u.defs
+	if u.tailDefs != nil && u.results[u.sel].At >= u.ix.Primary {
+		set = u.tailDefs
+	}
+	res := set.Define(word)
 	if len(res) == 0 {
 		u.defTitle = ""
 		u.defLines = []string{sgrDim + "no definition" + sgrReset}
@@ -570,15 +593,26 @@ func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 	if u.ordW > 0 {
 		fmt.Fprintf(&b, "%s%*d %s", sgrDim, u.ordW, r.At+1, sgrReset)
 	}
+	lead := 0
+	if u.ordW > 0 {
+		lead = u.ordW + 1
+	}
 	if selected {
 		b.WriteString(sgrSelected)
 		b.WriteString("> ")
 	} else {
 		b.WriteString("  ")
 	}
+	// Only the rows that have a character get the column for one. A blank
+	// gutter down the length of the word list would be three columns spent
+	// on the part of the list that is not there, and where the two meet the
+	// step between them reads as the boundary it is.
 	if u.glyph != nil {
-		b.WriteString(u.glyph(r.Word))
-		b.WriteString(" ")
+		if cell := u.glyph(r.Word); cell != "" {
+			b.WriteString(cell)
+			b.WriteString(" ")
+			lead += u.glyphW + 1
+		}
 	}
 
 	hit := make(map[int]bool, len(r.Positions))
@@ -586,7 +620,7 @@ func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 		hit[p] = true
 	}
 
-	budget := w - u.lead() - 2
+	budget := w - lead - 2
 	for i, c := range []rune(r.Word) {
 		if i >= budget {
 			break

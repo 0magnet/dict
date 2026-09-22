@@ -116,8 +116,8 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	query := strings.Join(args, " ")
-	ix := match.NewIndex(words)
-	defs := dictionaries()
+	ix, defs := index(words), dictionaries()
+	glyph := charGlyph()
 
 	if opts.random || opts.randomDef {
 		return printRandom(ix, defs, query)
@@ -138,8 +138,10 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	picked, err := runInteractive(pick{
-		ix: ix, query: query, source: source,
-		reverse: opts.reverse, defs: defs, showDefs: !opts.noDefs,
+		ix: ix, query: query, source: source, tail: tailName(ix, words),
+		tailDefs: characterSet(),
+		reverse:  opts.reverse, defs: defs, showDefs: !opts.noDefs,
+		glyph: glyph, glyphW: 2,
 	})
 	if err != nil {
 		return err
@@ -164,7 +166,17 @@ func printDefinition(ix *match.Index, defs *dictdb.Set, query string) error {
 	}
 	word := results[0].Word
 
-	found := defs.Define(word)
+	// A character, when that is what the query resolved to, is looked up in
+	// the character table and nowhere else. The dictionaries match a
+	// headword without regard to case, so asking them for SNOWMAN gets back
+	// the word snowman -- an answer to a question nobody asked. Which half
+	// of the list the match came from is the only thing that tells them
+	// apart. The picker's pane draws the same line; see ui.definition.
+	set := defs
+	if results[0].At >= ix.Primary {
+		set = characterSet()
+	}
+	found := set.Define(word)
 	if len(found) == 0 {
 		return fmt.Errorf("%s: no definition", word)
 	}
@@ -268,6 +280,11 @@ var sourcesCmd = &cobra.Command{
 			}
 		}
 		for _, n := range dictionaries().Names() {
+			// The character table is in the chain but is not a dictionary
+			// and has its own line below, with its version on it.
+			if n == unicodeName {
+				continue
+			}
 			where := "built in"
 			if fetched[n] {
 				// Not in this binary at all: read over HTTP from the
@@ -410,10 +427,16 @@ func randomPool(ix *match.Index, query string) []string {
 	var candidates []string
 	if query != "" {
 		for _, r := range ix.Search(query, 0) {
-			candidates = append(candidates, r.Word)
+			// A random word, not a random character: the tail is in the
+			// list so that it can be searched and scrolled into, and -r
+			// is the one thing that reaches into the list without being
+			// asked for anything in particular.
+			if r.At < ix.Primary {
+				candidates = append(candidates, r.Word)
+			}
 		}
 	} else {
-		candidates = ix.Words
+		candidates = ix.Words[:ix.Primary]
 	}
 
 	out := make([]string, 0, len(candidates))

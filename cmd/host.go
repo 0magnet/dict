@@ -66,7 +66,15 @@ type Host struct {
 // dictionaries is the lookup chain for one run: what is installed, what is
 // embedded, and — where this build embeds nothing — what the host can fetch.
 func dictionaries() *dictdb.Set {
-	return data.OpenSetRemote(data.DictdDirs, host.Fetch)
+	set := data.OpenSetRemote(data.DictdDirs, host.Fetch)
+	// Last in the chain, and reached only by a headword spelled exactly the
+	// way Unicode spells a character name -- which is to say, only by the
+	// names that are in the list. See unicodeSource.exact. It is here and
+	// not only in the :unicode picker because the characters are in the
+	// word list now, and a row you can select is a row that has to be able
+	// to say what it is.
+	set.Add(unicodeName, unicodeDict)
+	return set
 }
 
 // host is the current host. The default is the process one, so the
