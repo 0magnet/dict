@@ -54,11 +54,14 @@ built-in dictionaries. `:unicode` is below, and `:adlib` after that.
 
 ## The picker
 
-Each row is numbered with its place in the list, so it can be used as an index
-and not only as a filter.
+Each row carries a dim margin saying which entry it is: for a word its place
+in the list, so the list can be used as an index and not only as a filter, and
+for a character its code point. That is the one thing that tells two
+characters apart when a terminal draws both as the same smudge, and the thing
+to type into a program that wants one.
 
 The list does not end at `Zzz`. The 41,293 Unicode characters follow the
-words, so you can scroll off the end of the dictionary straight into `␀`. A
+words, so you can scroll off the end of the dictionary straight into `U+0000`. A
 character is its own headword — the row is the character, and its name is the
 first line of the definition, the same shape every other row has. It is
 searched by name, because a name is the only handle anyone has on a character

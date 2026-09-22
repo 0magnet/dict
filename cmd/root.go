@@ -120,6 +120,7 @@ func run(cmd *cobra.Command, args []string) error {
 	// A character is drawn as itself and chosen as itself; its name is only
 	// how it was found. A word is both, so these leave one alone.
 	display, value := charDisplay(), charValue()
+	code, codeW := charCode()
 
 	if opts.random || opts.randomDef {
 		return printRandom(ix, defs, query)
@@ -143,7 +144,7 @@ func run(cmd *cobra.Command, args []string) error {
 		ix: ix, query: query, source: source, tail: tailName(ix, words),
 		tailDefs: characterSet(),
 		reverse:  opts.reverse, defs: defs, showDefs: !opts.noDefs,
-		display: display, value: value,
+		display: display, value: value, code: code, codeW: codeW,
 	})
 	if err != nil {
 		return err

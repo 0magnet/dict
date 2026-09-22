@@ -94,7 +94,7 @@ func TestMoveOnEmptyResults(t *testing.T) {
 // searchKeeping() run the matcher rather than a stand-in for it.
 func newSearchUI(words []string) *ui {
 	ix := match.NewIndex(words)
-	u := &ui{ix: ix, rows: 12, total: len(words), ordW: digits(len(words))}
+	u := &ui{ix: ix, rows: 12, total: len(words), marginW: digits(len(words))}
 	u.search()
 	return u
 }
@@ -197,7 +197,7 @@ func TestRowDrawsWhatTheEntryStandsFor(t *testing.T) {
 	stands := map[string]string{"NARROW": "x", "WIDE": "中"}
 	u := &ui{
 		ix:   match.NewIndex([]string{"NARROW", "WIDE", "word"}),
-		rows: 12, total: 3, ordW: 1,
+		rows: 12, total: 3, marginW: 1,
 		display: func(w string) string { return stands[w] },
 	}
 	u.search()
@@ -219,7 +219,7 @@ func TestRowDrawsWhatTheEntryStandsFor(t *testing.T) {
 func TestSubstitutedRowIsNotHighlighted(t *testing.T) {
 	u := &ui{
 		ix:   match.NewIndex([]string{"SNOWMAN"}),
-		rows: 12, total: 1, ordW: 1,
+		rows: 12, total: 1, marginW: 1,
 		display: func(string) string { return "☃" },
 	}
 	u.query = []rune("snowman")
@@ -248,4 +248,29 @@ func stripSGR(s string) string {
 		i++
 	}
 	return b.String()
+}
+
+// TestMarginShowsTheCodeForACharacter pins what the dim column holds. A word
+// gets its place in the list; a character gets its code point, which is the
+// only thing that tells two glyphs apart when a terminal draws both as the
+// same smudge. Both are right-aligned in one column wide enough for either.
+func TestMarginShowsTheCodeForACharacter(t *testing.T) {
+	codes := map[string]string{"SNOWMAN": "U+2603"}
+	u := &ui{
+		ix:   match.NewIndex([]string{"word", "SNOWMAN"}),
+		rows: 12, total: 2, marginW: 6,
+		display: func(w string) string {
+			if w == "SNOWMAN" {
+				return "☃"
+			}
+			return ""
+		},
+		code: func(w string) string { return codes[w] },
+	}
+	u.search()
+	for i, want := range []string{"     1   word", "U+2603   ☃"} {
+		if got := stripSGR(u.renderRow(u.results[i], false, 40)); got != want {
+			t.Errorf("row %d = %q, want %q", i, got, want)
+		}
+	}
 }

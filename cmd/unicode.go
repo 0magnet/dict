@@ -443,6 +443,36 @@ func charDisplay() func(string) string {
 	}
 }
 
+// charCode is the code point a character row shows where a word row shows
+// its place in the list, and the width of the widest one the table holds.
+//
+// A place in the list is worth knowing about a word, which can be read. Two
+// characters drawn as themselves can be the same smudge at the size a
+// terminal draws a glyph -- a dozen of the SIGNWRITING characters are, and
+// so are most pairs of emoji at 16 pixels -- and then the code point is the
+// only thing that tells them apart, and the thing to type or paste into a
+// program that wants one.
+func charCode() (func(string) string, int) {
+	tab, err := data.Unicode()
+	if err != nil {
+		return nil, 0
+	}
+	// The table is in code point order, so the last entry is the longest
+	// this can return. Measuring it beats assuming a width that a later
+	// Unicode could outgrow.
+	width := 0
+	if n := tab.Len(); n > 0 {
+		width = len(unidata.Code(tab.At(n - 1).Code))
+	}
+	return func(name string) string {
+		c, ok := exactName(tab, name)
+		if !ok {
+			return ""
+		}
+		return unidata.Code(c.Code)
+	}, width
+}
+
 // charValue is what choosing a character row yields: the character, not the
 // drawing of it.
 //
@@ -494,12 +524,15 @@ func characterSet() *dictdb.Set {
 // SIGN is rarely the end of the errand; having × is.
 func pickChar(tab *unidata.Table, query string) error {
 	ix := match.NewIndex(tab.Names())
-	set := characterSet()
+	code, codeW := charCode()
 
 	picked, err := runInteractive(pick{
 		ix: ix, query: query, source: "unicode " + tab.Version(),
-		reverse: uniOpts.reverse, defs: set, showDefs: true,
+		reverse: uniOpts.reverse, defs: characterSet(), showDefs: true,
 		display: charDisplay(), value: charValue(),
+		// Every row here is a character, so the ordinal never shows: this
+		// list is indexed by code point and always was.
+		code: code, codeW: codeW,
 	})
 	if err != nil {
 		return err

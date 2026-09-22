@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -46,7 +47,8 @@ type ui struct {
 	cols       int
 	reverse    bool // prompt on top, list downward, as with fzf --layout=reverse
 
-	ordW    int // columns the ordinal takes
+	marginW int // columns the dim column before the marker takes
+	code    func(word string) string
 	display func(word string) string
 
 	// definition pane
@@ -155,6 +157,15 @@ type pick struct {
 	// and a reset in the middle of it would end the highlight early.
 	display func(word string) string
 	value   func(word string) string
+
+	// code is what such a row shows in the dim column where an ordinary row
+	// shows its place in the list: for a character, the code point. A place
+	// in the list is worth knowing about a word, which can be read; two
+	// characters drawn as themselves can be the same smudge at the size a
+	// terminal draws a glyph, and then the code point is the only thing
+	// that tells them apart. codeW is the widest it returns.
+	code  func(word string) string
+	codeW int
 }
 
 // runInteractive drives the interactive search and returns the chosen word,
@@ -180,7 +191,9 @@ func runInteractive(p pick) (string, error) {
 		out: tty, size: size, ix: p.ix, sourceName: name, total: len(p.ix.Words),
 		query: []rune(p.query), reverse: p.reverse,
 		defs: p.defs, tailDefs: p.tailDefs, showDefs: p.showDefs,
-		ordW: digits(len(p.ix.Words)), display: p.display,
+		display: p.display, code: p.code,
+		// One column, wide enough for whichever of the two it has to hold.
+		marginW: max(digits(len(p.ix.Words)), p.codeW),
 	}
 
 	// Restore the terminal on the way out however we leave, including panics.
@@ -442,10 +455,10 @@ func (u *ui) paneWidths(w int) (listW, defW int, show bool) {
 	return listW, w - listW - 3, true
 }
 
-// lead is what a row spends before the selection marker: the ordinal.
+// lead is what a row spends before the selection marker: the margin.
 func (u *ui) lead() int {
-	if u.ordW > 0 {
-		return u.ordW + 1
+	if u.marginW > 0 {
+		return u.marginW + 1
 	}
 	return 0
 }
@@ -600,13 +613,21 @@ func (u *ui) draw() {
 // renderRow draws one result, highlighting the runes the query matched.
 func (u *ui) renderRow(r match.Result, selected bool, w int) string {
 	var b bytes.Buffer
-	// The ordinal is where the word is in the list, counted from one -- the
-	// number the word has whatever the search did to the order. It sits
-	// outside the selection highlight because it is a fact about the list
-	// rather than part of the word, and reads better as a dim margin than
-	// as the left end of a reversed bar.
-	if u.ordW > 0 {
-		fmt.Fprintf(&b, "%s%*d %s", sgrDim, u.ordW, r.At+1, sgrReset)
+	// The margin says which entry this is: for a word its place in the list
+	// counted from one, the number it has whatever the search did to the
+	// order; for a character its code point, which is the name of it that
+	// is short enough to sit here. Either sits outside the selection
+	// highlight, being a fact about the entry rather than part of it, and
+	// reads better as a dim margin than as the left end of a reversed bar.
+	if u.marginW > 0 {
+		m := ""
+		if u.code != nil {
+			m = u.code(r.Word)
+		}
+		if m == "" {
+			m = strconv.Itoa(r.At + 1)
+		}
+		fmt.Fprintf(&b, "%s%*s %s", sgrDim, u.marginW, m, sgrReset)
 	}
 	if selected {
 		b.WriteString(sgrSelected)
