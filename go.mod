@@ -5,9 +5,9 @@ go 1.26.0
 require (
 	github.com/0magnet/afero v1.15.1-0.20260908180037-e149838f49bc
 	github.com/0magnet/calvin v0.0.0-20260915170035-09af7075474e
-	github.com/0magnet/sh/v3 v3.13.2-0.20260908180147-cd87da5aad6a
+	github.com/0magnet/sh/v3 v3.13.2-0.20260928172341-4c52a7abff02
 	github.com/0magnet/termanim v0.0.0-20260916100333-d501f348ee17
-	github.com/0magnet/websh v0.0.0-20260924101532-76422c7ff9c3
+	github.com/0magnet/websh v0.0.0-20260928172902-22c6f782792e
 	github.com/clipperhouse/displaywidth v0.11.0
 	github.com/gdamore/tcell/v3 v3.5.0
 	github.com/spf13/cobra v1.10.2
