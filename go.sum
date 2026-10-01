@@ -8,10 +8,10 @@ github.com/0magnet/termanim v0.0.0-20260916100333-d501f348ee17 h1:haAs+7Tb5q91PJ
 github.com/0magnet/termanim v0.0.0-20260916100333-d501f348ee17/go.mod h1:MYXXCesDzLpSA5ULDgbrzOq+I5tIdSzfJiwa5s6qXYA=
 github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d h1:zLUW8axnE6LsLz1Kt5ne06nYw094U6qC68DClAgGrX8=
 github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d/go.mod h1:YBQz88D4gXBLb9++oXsiZZjfbtRC0bp4c2pduFOyZts=
-github.com/0magnet/websh v0.0.0-20260928172902-22c6f782792e h1:5mcGjakhxbsm6Qazp4qRaWeLOvXpO95cvueYmZ0YXW0=
-github.com/0magnet/websh v0.0.0-20260928172902-22c6f782792e/go.mod h1:9PsSs8cwrFxc2NA2lAru/LNMq9b9jjK5EGxdWq60tms=
-github.com/0magnet/xterm-go v0.0.0-20260923132223-00c1a8e687cc h1:TGprWZha/nFbAiaBO7wnsXm4frNDIquWPlGVvHtQ8Wc=
-github.com/0magnet/xterm-go v0.0.0-20260923132223-00c1a8e687cc/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
+github.com/0magnet/websh v0.0.0-20261001114507-ccf76b5415bd h1:QHtEVA5tnc9BiNJ+LRAzrYboj2aovy4B5BPvESeVRrs=
+github.com/0magnet/websh v0.0.0-20261001114507-ccf76b5415bd/go.mod h1:recqVuEnBWb810P/+Br+ucGyaJl7qYFfJyPylgeiqZ4=
+github.com/0magnet/xterm-go v0.0.0-20260930222525-d3033e9b370a h1:0vZOcOJSwaX7QPrKl+4J17gBxbSks3NJxcqPTzqP3yM=
+github.com/0magnet/xterm-go v0.0.0-20260930222525-d3033e9b370a/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
 github.com/benhoyt/goawk v1.32.0 h1:CK/mnBxGsNqX8hdghPIctl2aGIcwfnhT6sv+9M/bY7w=
 github.com/benhoyt/goawk v1.32.0/go.mod h1:jXTQxBxtQ0VsjFqc8dw7tIJj3SDzQN8kcdMq7r83/ZA=
 github.com/clipperhouse/displaywidth v0.11.0 h1:lBc6kY44VFw+TDx4I8opi/EtL9m20WSEFgwIwO+UVM8=
@@ -35,8 +35,8 @@ github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/itchyny/gojq v0.12.19 h1:ttXA0XCLEMoaLOz5lSeFOZ6u6Q3QxmG46vfgI4O0DEs=
 github.com/itchyny/gojq v0.12.19/go.mod h1:5galtVPDywX8SPSOrqjGxkBeDhSxEW1gSxoy7tn1iZY=
-github.com/itchyny/timefmt-go v0.1.8 h1:1YEo1JvfXeAHKdjelbYr/uCuhkybaHCeTkH8Bo791OI=
-github.com/itchyny/timefmt-go v0.1.8/go.mod h1:5E46Q+zj7vbTgWY8o5YkMeYb4I6GeWLFnetPy5oBrAI=
+github.com/itchyny/timefmt-go v0.1.9 h1:J4j1qMqZbg5jycwT6zIKfRgZ9aqqMxqanaI6Rr9Ezs8=
+github.com/itchyny/timefmt-go v0.1.9/go.mod h1:5E46Q+zj7vbTgWY8o5YkMeYb4I6GeWLFnetPy5oBrAI=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
 github.com/kr/pretty v0.3.1/go.mod h1:hoEshYVHaxMs3cyo3Yncou5ZscifuDolrwPKZanG3xk=
 github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=

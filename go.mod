@@ -7,7 +7,7 @@ require (
 	github.com/0magnet/calvin v0.0.0-20260915170035-09af7075474e
 	github.com/0magnet/sh/v3 v3.13.2-0.20260928172341-4c52a7abff02
 	github.com/0magnet/termanim v0.0.0-20260916100333-d501f348ee17
-	github.com/0magnet/websh v0.0.0-20260928172902-22c6f782792e
+	github.com/0magnet/websh v0.0.0-20261001114507-ccf76b5415bd
 	github.com/clipperhouse/displaywidth v0.11.0
 	github.com/gdamore/tcell/v3 v3.5.0
 	github.com/spf13/cobra v1.10.2
@@ -17,14 +17,14 @@ require (
 
 require (
 	github.com/0magnet/u-root v0.16.1-0.20260907193324-47ff3c83f69d // indirect
-	github.com/0magnet/xterm-go v0.0.0-20260923132223-00c1a8e687cc // indirect
+	github.com/0magnet/xterm-go v0.0.0-20260930222525-d3033e9b370a // indirect
 	github.com/benhoyt/goawk v1.32.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/dustin/go-humanize v1.1.0 // indirect
 	github.com/gdamore/encoding v1.0.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/itchyny/gojq v0.12.19 // indirect
-	github.com/itchyny/timefmt-go v0.1.8 // indirect
+	github.com/itchyny/timefmt-go v0.1.9 // indirect
 	github.com/lucasb-eyer/go-colorful v1.4.1 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	golang.org/x/sys v0.48.0 // indirect
