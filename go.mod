@@ -7,7 +7,7 @@ require (
 	github.com/0magnet/calvin v0.0.0
 	github.com/0magnet/sh/v3 v3.13.2-0.20261004194540-aa2d6e4a31a5
 	github.com/0magnet/termanim v0.0.1-0.20261004021059-29f9a64aa72a
-	github.com/0magnet/websh v0.0.1-0.20261004183953-6a1b7c7a18ec
+	github.com/0magnet/websh v0.0.1-0.20261004200853-adb76a8fa4c2
 	github.com/clipperhouse/displaywidth v0.11.0
 	github.com/gdamore/tcell/v3 v3.5.0
 	github.com/spf13/cobra v1.10.2
