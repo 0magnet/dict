@@ -301,6 +301,12 @@ The Unicode Character Database is under the Unicode license, and GNU Unifont,
 which only the demo page uses, is dual-licensed SIL OFL 1.1 and GPL-2.0-or-later
 with the font embedding exception. See `fonts/LICENSE-unifont`.
 
+## Related projects
+
+Another Go dictionary that runs in the terminal and the browser:
+
+- [taskusanakirja](https://taskusanakirja.com/) — a Finnish–English dictionary in Go, in the terminal and in the browser via WebAssembly
+
 ## Dependency Graph
 
 Made with [goda](https://github.com/loov/goda):
