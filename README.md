@@ -45,12 +45,23 @@ dict [query] [flags]
 | `-D`, `--definition-only` | print only the definition text, no headword or source |
 | `-r`, `--random` | print a random word and exit |
 | `-R`, `--random-define` | print a random word with its definition |
-| `-p`, `--pos` | with `-r` or `-R`, draw only a noun, verb, adj or adv |
+| `-p`, `--pos` | with `-r` or `-R`, draw only a noun, verb, vt, vi, adj, adv, name, person or place |
+| `--no-defs` | hide the definition pane in the interactive view |
+| `--reverse` | prompt at the top and list running down, as with `fzf --layout=reverse` |
 
 Three subcommands report on the data rather than search it: `:languages` lists
 other-language word lists installed on the system, `:sources` shows which word
 list and dictionaries are in use, and `:licenses` prints the licenses of the
-built-in dictionaries. `:unicode` is below, and `:adlib` after that.
+Definitions are looked up in Webster's 1913, WordNet, FOLDOC, the Jargon File and
+the Elements, in that order. Names and places come next, then Wiktionary for ordinary
+vocabulary the dictionaries lack, and Wikipedia summaries last, for brands,
+companies and people. They are consulted only when nothing earlier has the word,
+and `:sources` lists the dictionaries in use. A dictd database installed under
+`/usr/share/dictd`, `/usr/lib/dict` or `/usr/local/share/dictd` takes
+precedence over the embedded copy.
+
+The remaining subcommands are `:unicode` (below), `:adlib` (after that) and
+`:rain`.
 
 ## The picker
 
@@ -196,6 +207,15 @@ principal parts of six thousand verbs — `Rend (r[e^]nd), v. t. [imp. & p. p.
 irregulars included, so those can be read rather than guessed. Regular rules
 fill in for everything else.
 
+## Rain
+
+`:rain` prints one frame of the matrix code rain with the word list as its
+alphabet, so each falling stream spells a word. It prints even when piped. `--tui`
+animates it full-screen (Esc or Ctrl-C to leave), `--speed` scales the fall rate
+(`--tui` only), `--gap` puts blank cells between repeats of a word, `--glow`
+holds lit any word that appears reading across the rain (`--tui` only), and
+`--seed` reproduces a still exactly.
+
 ## Ad lib
 
 `:adlib` is what all of that is for. A frame is who is telling you about it, a
@@ -294,8 +314,10 @@ shows an emoji never fetches it.
 
 ## Licenses
 
-The code is MIT. The bundled dictionaries are not — each keeps its own license,
-and `dict :licenses` prints them. See `NOTICE` and `data/licenses/`.
+The code is MIT, but the binary as a whole is GPL-3.0-or-later, because GCIDE is
+embedded in it and GCIDE is GPL-3.0-or-later. `LICENSE` holds the GPL-3 text.
+The other bundled data keeps its own license, and `dict :licenses` prints them.
+See `NOTICE` and `data/licenses/`.
 
 The Unicode Character Database is under the Unicode license, and GNU Unifont,
 which only the demo page uses, is dual-licensed SIL OFL 1.1 and GPL-2.0-or-later
@@ -331,9 +353,9 @@ gocloc --not-match-d='(vendor|node_modules|\.git)' .
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Go                              57            864           2019           8300
+Go                              57            926           2332           8965
 JavaScript                       1             61             36            478
-Markdown                         2             70              0            255
+Markdown                         2             84              0            312
 YAML                             1              0             16            101
 HTML                             1              4             22             76
 Makefile                         1             12             13             35
@@ -342,6 +364,6 @@ JSON                             1              0              0              8
 XML                              1              0              0              4
 Plain Text                       1              1              0              3
 -------------------------------------------------------------------------------
-TOTAL                           67           1021           2136           9288
+TOTAL                           67           1097           2449          10010
 -------------------------------------------------------------------------------
 ```
