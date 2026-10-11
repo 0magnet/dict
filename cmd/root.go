@@ -92,7 +92,7 @@ func init() {
 	RootCmd.CompletionOptions.DisableDefaultCmd = true
 
 	RootCmd.SetHelpCommand(&cobra.Command{Hidden: true})
-	clihelp.Init(RootCmd, "dict", true)
+	clihelp.Init(RootCmd, "dict")
 }
 
 func run(cmd *cobra.Command, args []string) error {

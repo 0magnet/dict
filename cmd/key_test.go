@@ -6,14 +6,21 @@ import (
 	"time"
 )
 
+// testPipe skips where os.Pipe is not implemented (js/wasm).
+func testPipe(t *testing.T) (r, w *os.File) {
+	t.Helper()
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Skipf("no pipes here: %v", err)
+	}
+	return r, w
+}
+
 // keyTest drives the decoder over an os.Pipe rather than a terminal, so the
 // exact bytes and their timing are under the test's control.
 func keyTest(t *testing.T, in []byte, want []keyKind) {
 	t.Helper()
-	r, w, err := os.Pipe()
-	if err != nil {
-		t.Fatal(err)
-	}
+	r, w := testPipe(t)
 	defer r.Close() //nolint:errcheck // test plumbing; the pipe dies with the test
 
 	kr := newKeyReader(r)
@@ -79,8 +86,8 @@ func TestDecodeControls(t *testing.T) {
 }
 
 func TestDecodeUTF8(t *testing.T) {
-	r, w, _ := os.Pipe() //nolint:errcheck // as above
-	defer r.Close()      //nolint:errcheck // as above
+	r, w := testPipe(t)
+	defer r.Close() //nolint:errcheck // as above
 	kr := newKeyReader(r)
 	go w.Write([]byte("café")) //nolint:errcheck // as above
 
@@ -104,7 +111,7 @@ func TestDecodeUTF8(t *testing.T) {
 func TestDecodeEndOfInput(t *testing.T) {
 	// A closed input must surface as an interrupt so the caller can exit,
 	// rather than blocking forever.
-	r, w, _ := os.Pipe() //nolint:errcheck // as above
+	r, w := testPipe(t)
 	kr := newKeyReader(r)
 	w.Close() //nolint:errcheck,gosec // as above
 
