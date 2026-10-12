@@ -4,10 +4,10 @@ go 1.26.6
 
 require (
 	github.com/0magnet/afero v1.15.1-0.20261003211811-482680d00992
-	github.com/0magnet/calvin v0.0.1-0.20261011231802-9b916a31f7b1
+	github.com/0magnet/calvin v0.0.1-0.20261012011430-3b61384c1b9e
 	github.com/0magnet/sh/v3 v3.13.2-0.20261004194540-aa2d6e4a31a5
-	github.com/0magnet/termanim v0.0.1-0.20261012010327-5df33e35e7fd
-	github.com/0magnet/websh v0.0.1-0.20261012010421-aa9f8595d2d0
+	github.com/0magnet/termanim v0.0.1-0.20261012131914-f74023465834
+	github.com/0magnet/websh v0.0.1-0.20261012132423-845a7d2c77c9
 	github.com/clipperhouse/displaywidth v0.11.0
 	github.com/gdamore/tcell/v3 v3.6.0
 	github.com/spf13/cobra v1.10.2
@@ -16,11 +16,11 @@ require (
 )
 
 require (
-	github.com/0magnet/bottle v0.0.1-0.20261010202827-a5ff39f4742b // indirect
+	github.com/0magnet/bottle v0.0.1-0.20261012024120-0f51d9f0e03a // indirect
 	github.com/0magnet/coloredcobra v1.0.4-0.20261011230509-d5385cf44398 // indirect
-	github.com/0magnet/img2txt-go v0.0.1-0.20261010111608-9ac2cd47b853 // indirect
+	github.com/0magnet/img2txt-go v0.0.1-0.20261012011230-57c72dcd90ae // indirect
 	github.com/0magnet/u-root v0.16.1-0.20261003214924-44e47b732754 // indirect
-	github.com/0magnet/winbox-go v0.0.1-0.20261012010320-88f1679695ed // indirect
+	github.com/0magnet/winbox-go v0.0.1-0.20261012131923-a829715e530f // indirect
 	github.com/0magnet/xterm-go v0.0.1-0.20261011000522-9adb4a350db6 // indirect
 	github.com/benhoyt/goawk v1.32.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
