@@ -22,10 +22,10 @@
 <!-- github.com/0magnet/dict/cmd -->
 <g id="node2" class="node">
 <title>github.com/0magnet/dict/cmd</title>
-<g id="a_node2"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/cmd" xlink:title="github.com/0magnet/dict/cmd\l3070 / 95.5KB\l" target="_graphviz">
+<g id="a_node2"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/cmd" xlink:title="github.com/0magnet/dict/cmd\l3556 / 115.3KB\l" target="_graphviz">
 <polygon fill="none" stroke="#918207" stroke-width="2" stroke-opacity="0.698039" points="882,-155 702,-155 702,-119 882,-119 882,-155"/>
 <text xml:space="preserve" text-anchor="start" x="710" y="-140.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/cmd</text>
-<text xml:space="preserve" text-anchor="start" x="710" y="-127.5" font-family="Times,serif" font-size="10.00">3070 / 95.5KB</text>
+<text xml:space="preserve" text-anchor="start" x="710" y="-127.5" font-family="Times,serif" font-size="10.00">3556 / 115.3KB</text>
 </a>
 </g>
 </g>
@@ -38,10 +38,10 @@
 <!-- github.com/0magnet/dict/data -->
 <g id="node3" class="node">
 <title>github.com/0magnet/dict/data</title>
-<g id="a_node3"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/data" xlink:title="github.com/0magnet/dict/data\l240 / 8.3KB\l" target="_graphviz">
+<g id="a_node3"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/data" xlink:title="github.com/0magnet/dict/data\l240 / 8.4KB\l" target="_graphviz">
 <polygon fill="none" stroke="#07915a" stroke-width="2" stroke-opacity="0.698039" points="1188,-105 1008,-105 1008,-69 1188,-69 1188,-105"/>
 <text xml:space="preserve" text-anchor="start" x="1016" y="-90.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/data</text>
-<text xml:space="preserve" text-anchor="start" x="1016" y="-77.5" font-family="Times,serif" font-size="10.00">240 / 8.3KB</text>
+<text xml:space="preserve" text-anchor="start" x="1016" y="-77.5" font-family="Times,serif" font-size="10.00">240 / 8.4KB</text>
 </a>
 </g>
 </g>
@@ -54,10 +54,10 @@
 <!-- github.com/0magnet/dict/dictdb -->
 <g id="node6" class="node">
 <title>github.com/0magnet/dict/dictdb</title>
-<g id="a_node6"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/dictdb" xlink:title="github.com/0magnet/dict/dictdb\l1389 / 47.1KB\l" target="_graphviz">
+<g id="a_node6"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/dictdb" xlink:title="github.com/0magnet/dict/dictdb\l1389 / 47.4KB\l" target="_graphviz">
 <polygon fill="none" stroke="#072991" stroke-width="2" stroke-opacity="0.698039" points="1494,-82 1314,-82 1314,-46 1494,-46 1494,-82"/>
 <text xml:space="preserve" text-anchor="start" x="1322" y="-67.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/dictdb</text>
-<text xml:space="preserve" text-anchor="start" x="1322" y="-54.5" font-family="Times,serif" font-size="10.00">1389 / 47.1KB</text>
+<text xml:space="preserve" text-anchor="start" x="1322" y="-54.5" font-family="Times,serif" font-size="10.00">1389 / 47.4KB</text>
 </a>
 </g>
 </g>
@@ -70,10 +70,10 @@
 <!-- github.com/0magnet/dict/match -->
 <g id="node7" class="node">
 <title>github.com/0magnet/dict/match</title>
-<g id="a_node7"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/match" xlink:title="github.com/0magnet/dict/match\l620 / 17.1KB\l" target="_graphviz">
+<g id="a_node7"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/match" xlink:title="github.com/0magnet/dict/match\l653 / 18.6KB\l" target="_graphviz">
 <polygon fill="none" stroke="#719107" stroke-width="2" stroke-opacity="0.698039" points="1188,-197 1008,-197 1008,-161 1188,-161 1188,-197"/>
 <text xml:space="preserve" text-anchor="start" x="1016" y="-182.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/match</text>
-<text xml:space="preserve" text-anchor="start" x="1016" y="-169.5" font-family="Times,serif" font-size="10.00">620 / 17.1KB</text>
+<text xml:space="preserve" text-anchor="start" x="1016" y="-169.5" font-family="Times,serif" font-size="10.00">653 / 18.6KB</text>
 </a>
 </g>
 </g>
@@ -84,9 +84,9 @@
 <polygon fill="#719107" fill-opacity="0.698039" stroke="#719107" stroke-width="2" stroke-opacity="0.698039" points="1020.94,-160.25 1031.49,-159.34 1022.67,-153.47 1020.94,-160.25"/>
 </g>
 <!-- github.com/0magnet/dict/unidata -->
-<g id="node9" class="node">
+<g id="node8" class="node">
 <title>github.com/0magnet/dict/unidata</title>
-<g id="a_node9"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/unidata" xlink:title="github.com/0magnet/dict/unidata\l553 / 19.0KB\l" target="_graphviz">
+<g id="a_node8"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/unidata" xlink:title="github.com/0magnet/dict/unidata\l553 / 19.0KB\l" target="_graphviz">
 <polygon fill="none" stroke="#079134" stroke-width="2" stroke-opacity="0.698039" points="1512,-201 1296,-201 1296,-165 1512,-165 1512,-201"/>
 <text xml:space="preserve" text-anchor="start" x="1304" y="-186.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/unidata</text>
 <text xml:space="preserve" text-anchor="start" x="1304" y="-173.5" font-family="Times,serif" font-size="10.00">553 / 19.0KB</text>
@@ -114,10 +114,10 @@
 <!-- github.com/0magnet/dict/data/gen -->
 <g id="node4" class="node">
 <title>github.com/0magnet/dict/data/gen</title>
-<g id="a_node4"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/data/gen" xlink:title="github.com/0magnet/dict/data/gen\l1182 / 35.2KB\l" target="_graphviz">
+<g id="a_node4"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/data/gen" xlink:title="github.com/0magnet/dict/data/gen\l1182 / 35.9KB\l" target="_graphviz">
 <polygon fill="none" stroke="#5f0791" stroke-width="2" stroke-opacity="0.698039" points="900,-36 684,-36 684,0 900,0 900,-36"/>
 <text xml:space="preserve" text-anchor="start" x="692" y="-21.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/data/gen</text>
-<text xml:space="preserve" text-anchor="start" x="692" y="-8.5" font-family="Times,serif" font-size="10.00">1182 / 35.2KB</text>
+<text xml:space="preserve" text-anchor="start" x="692" y="-8.5" font-family="Times,serif" font-size="10.00">1182 / 35.9KB</text>
 </a>
 </g>
 </g>
@@ -143,23 +143,13 @@
 </a>
 </g>
 </g>
-<!-- github.com/0magnet/dict/serve -->
-<g id="node8" class="node">
-<title>github.com/0magnet/dict/serve</title>
-<g id="a_node8"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/serve" xlink:title="github.com/0magnet/dict/serve\l19 / 680B\l" target="_graphviz">
-<polygon fill="none" stroke="#07916c" stroke-width="2" stroke-opacity="0.698039" points="216,-209 36,-209 36,-173 216,-173 216,-209"/>
-<text xml:space="preserve" text-anchor="start" x="44" y="-194.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/serve</text>
-<text xml:space="preserve" text-anchor="start" x="44" y="-181.5" font-family="Times,serif" font-size="10.00">19 / 680B</text>
-</a>
-</g>
-</g>
 <!-- github.com/0magnet/dict/web/app -->
-<g id="node10" class="node">
+<g id="node9" class="node">
 <title>github.com/0magnet/dict/web/app</title>
-<g id="a_node10"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/web/app" xlink:title="github.com/0magnet/dict/web/app\l67 / 2.5KB\l" target="_graphviz">
+<g id="a_node9"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/web/app" xlink:title="github.com/0magnet/dict/web/app\l67 / 2.6KB\l" target="_graphviz">
 <polygon fill="none" stroke="#910727" stroke-width="2" stroke-opacity="0.698039" points="576,-101 360,-101 360,-65 576,-65 576,-101"/>
 <text xml:space="preserve" text-anchor="start" x="368" y="-86.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/web/app</text>
-<text xml:space="preserve" text-anchor="start" x="368" y="-73.5" font-family="Times,serif" font-size="10.00">67 / 2.5KB</text>
+<text xml:space="preserve" text-anchor="start" x="368" y="-73.5" font-family="Times,serif" font-size="10.00">67 / 2.6KB</text>
 </a>
 </g>
 </g>
@@ -170,9 +160,9 @@
 <polygon fill="#918207" fill-opacity="0.698039" stroke="#918207" stroke-width="2" stroke-opacity="0.698039" points="702.24,-118.25 712.79,-117.3 703.94,-111.46 702.24,-118.25"/>
 </g>
 <!-- github.com/0magnet/dict/web/fetch -->
-<g id="node11" class="node">
+<g id="node10" class="node">
 <title>github.com/0magnet/dict/web/fetch</title>
-<g id="a_node11"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/web/fetch" xlink:title="github.com/0magnet/dict/web/fetch\l129 / 4.2KB\l" target="_graphviz">
+<g id="a_node10"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/web/fetch" xlink:title="github.com/0magnet/dict/web/fetch\l129 / 4.2KB\l" target="_graphviz">
 <polygon fill="none" stroke="#910739" stroke-width="2" stroke-opacity="0.698039" points="900,-101 684,-101 684,-65 900,-65 900,-101"/>
 <text xml:space="preserve" text-anchor="start" x="692" y="-86.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/web/fetch</text>
 <text xml:space="preserve" text-anchor="start" x="692" y="-73.5" font-family="Times,serif" font-size="10.00">129 / 4.2KB</text>
@@ -198,12 +188,12 @@
 <polygon fill="#072991" fill-opacity="0.698039" stroke="#072991" stroke-width="2" stroke-opacity="0.698039" points="1299.95,-65.19 1310.02,-61.89 1300.09,-58.2 1299.95,-65.19"/>
 </g>
 <!-- github.com/0magnet/dict/web/term -->
-<g id="node12" class="node">
+<g id="node11" class="node">
 <title>github.com/0magnet/dict/web/term</title>
-<g id="a_node12"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/web/term" xlink:title="github.com/0magnet/dict/web/term\l103 / 3.9KB\l" target="_graphviz">
+<g id="a_node11"><a xlink:href="https://pkg.go.dev/github.com/0magnet/dict/web/term" xlink:title="github.com/0magnet/dict/web/term\l104 / 3.9KB\l" target="_graphviz">
 <polygon fill="none" stroke="#910708" stroke-width="2" stroke-opacity="0.698039" points="234,-101 18,-101 18,-65 234,-65 234,-101"/>
 <text xml:space="preserve" text-anchor="start" x="26" y="-86.25" font-family="Times,serif" font-size="10.00">github.com/0magnet/dict/web/term</text>
-<text xml:space="preserve" text-anchor="start" x="26" y="-73.5" font-family="Times,serif" font-size="10.00">103 / 3.9KB</text>
+<text xml:space="preserve" text-anchor="start" x="26" y="-73.5" font-family="Times,serif" font-size="10.00">104 / 3.9KB</text>
 </a>
 </g>
 </g>
