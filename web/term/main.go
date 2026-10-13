@@ -43,9 +43,8 @@ func main() {
 	app.Register()
 
 	sess, err := web.NewSession(container, web.Options{
-		FS:       vfs,
-		Host:     "you@dict",
-		Greeting: greeting(),
+		FS:   vfs,
+		Host: "you@dict",
 		// Unifont last, so that `dict :unicode` can draw what it names.
 		// It is the only font that covers Unicode, being a 16-pixel
 		// bitmap font with a glyph for nearly every assigned code point,
@@ -68,29 +67,6 @@ func main() {
 	}
 
 	select {}
-}
-
-// greeting names the few things worth trying. Anything longer is
-// scrolled away by the first command.
-//
-// The line endings are CRLF because this goes straight to the terminal
-// with WriteString, not through a line discipline: a bare LF moves down a
-// row without returning to column 0, so every line starts where the last
-// one ended and the greeting walks off the right of the screen.
-func greeting() string {
-	return "" +
-		"dict — look up how a word is spelled, and what it means.\r\n" +
-		"\r\n" +
-		"  dict recieve        a misspelling still finds the word\r\n" +
-		"  dict -d yacc        what it means\r\n" +
-		"  dict -R             a random word\r\n" +
-		"  dict :unicode ’     what a character is, rather than a word\r\n" +
-		"  dict --help         everything else\r\n" +
-		"\r\n" +
-		"the full word list and FOLDOC, Jargon and Elements are in the page;\r\n" +
-		"Webster's 1913 and WordNet are 24.7 MB, so a definition fetches the\r\n" +
-		"one chunk it needs. Same answers as the installed binary.\r\n" +
-		"github.com/0magnet/dict\r\n"
 }
 
 // linked reads ?run=, splitting on ';' so a link can run more than one.
