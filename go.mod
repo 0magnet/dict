@@ -7,7 +7,7 @@ require (
 	github.com/0magnet/calvin v0.0.1-0.20261012011430-3b61384c1b9e
 	github.com/0magnet/sh/v3 v3.13.2-0.20261004194540-aa2d6e4a31a5
 	github.com/0magnet/termanim v0.0.1-0.20261012131914-f74023465834
-	github.com/0magnet/websh v0.0.1-0.20261012132423-845a7d2c77c9
+	github.com/0magnet/websh v0.0.1-0.20261013125122-8351c1221bae
 	github.com/clipperhouse/displaywidth v0.11.0
 	github.com/gdamore/tcell/v3 v3.6.0
 	github.com/spf13/cobra v1.10.2
@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	github.com/0magnet/bottle v0.0.1-0.20261012024120-0f51d9f0e03a // indirect
+	github.com/0magnet/bottle v0.0.1-0.20261012170135-a605c941016f // indirect
 	github.com/0magnet/coloredcobra v1.0.4-0.20261011230509-d5385cf44398 // indirect
 	github.com/0magnet/img2txt-go v0.0.1-0.20261012011230-57c72dcd90ae // indirect
 	github.com/0magnet/u-root v0.16.1-0.20261003214924-44e47b732754 // indirect
