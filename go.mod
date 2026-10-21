@@ -7,7 +7,7 @@ require (
 	github.com/0magnet/calvin v0.0.1-0.20261013221715-da6581155df3
 	github.com/0magnet/sh/v3 v3.13.2-0.20261004194540-aa2d6e4a31a5
 	github.com/0magnet/termanim v0.0.1-0.20261013224625-c801aece6dff
-	github.com/0magnet/websh v0.0.1-0.20261020221255-e851bfeabe30
+	github.com/0magnet/websh v0.0.1-0.20261021102026-4397eb6f191c
 	github.com/clipperhouse/displaywidth v0.11.0
 	github.com/gdamore/tcell/v3 v3.6.0
 	github.com/spf13/cobra v1.10.2
@@ -20,7 +20,7 @@ require (
 	github.com/0magnet/coloredcobra v1.0.4-0.20261012213101-faa6bd8f94c5 // indirect
 	github.com/0magnet/img2txt-go v0.0.1-0.20261013220954-ae0d760b7d2b // indirect
 	github.com/0magnet/u-root v0.16.1-0.20261003214924-44e47b732754 // indirect
-	github.com/0magnet/winbox-go v0.0.1-0.20261013224642-cc4224c41a9c // indirect
+	github.com/0magnet/winbox-go v0.0.1-0.20261020181245-bacce940cc20 // indirect
 	github.com/0magnet/xterm-go v0.0.1-0.20261013223808-aa0a32cd702b // indirect
 	github.com/benhoyt/goawk v1.32.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
