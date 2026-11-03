@@ -14,12 +14,12 @@ github.com/0magnet/termanim v0.0.1-0.20261013224625-c801aece6dff h1:R5EjBAYkLdJA
 github.com/0magnet/termanim v0.0.1-0.20261013224625-c801aece6dff/go.mod h1:sPb6ZYeBx+TFCOBfDTHIaKXn+7DjQasS5vARJaiWP0Y=
 github.com/0magnet/u-root v0.16.1-0.20261003214924-44e47b732754 h1:wK2MncQOnEea7yqiOHvv3oD89sc+YC1dAw4zw1o48mQ=
 github.com/0magnet/u-root v0.16.1-0.20261003214924-44e47b732754/go.mod h1:9N1kqBjNdAUT/pfrWKyty4zS5ZQgG1OvsTmhdcpAWB0=
-github.com/0magnet/websh v0.0.1-0.20261102141625-b1307c252476 h1:10H8wCypKn0jVC/tFnHpeOjs9P+d6w+z5mXfdS+SmNs=
-github.com/0magnet/websh v0.0.1-0.20261102141625-b1307c252476/go.mod h1:JLok15TEj21zcBgCoMrLwFpgCGJhFJLWqwED4AzvNf0=
+github.com/0magnet/websh v0.0.1-0.20261103125818-413e7491e7e6 h1:mkX2eJLEszKvLoBn/JWWSyiOBR/2mlZ9GXPv0SKuGuI=
+github.com/0magnet/websh v0.0.1-0.20261103125818-413e7491e7e6/go.mod h1:kgb5ectwq/ZABG1NLmyc9taca0W4B8oY+CEgvzW7SKw=
 github.com/0magnet/winbox-go v0.0.1-0.20261028211148-34d6e7c4492d h1:eMoEUQtw4n3KoyMZ8mPDR0S1S5EpBqNBqeCO/WPuCXI=
 github.com/0magnet/winbox-go v0.0.1-0.20261028211148-34d6e7c4492d/go.mod h1:haaCdC90/H8TsR8O04zqrzpOHFSqMgB6QgnyMIS/FxE=
-github.com/0magnet/xterm-go v0.0.1-0.20261028211146-6bd2303b2f23 h1:BFC+GKX27ebz5XH+fz1XCXPwDNgP4Z43R66J1g8dDy0=
-github.com/0magnet/xterm-go v0.0.1-0.20261028211146-6bd2303b2f23/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
+github.com/0magnet/xterm-go v0.0.1-0.20261102175652-6023ed24df89 h1:ofWvOgsbCE3T9NFFZzXi0omtXlk9smvDBJkIdrQ/H9A=
+github.com/0magnet/xterm-go v0.0.1-0.20261102175652-6023ed24df89/go.mod h1:W6c6ofSTsxXuQEr1rSZ3qmfOj5a3LGB3uLQBL0/TiKc=
 github.com/benhoyt/goawk v1.32.0 h1:CK/mnBxGsNqX8hdghPIctl2aGIcwfnhT6sv+9M/bY7w=
 github.com/benhoyt/goawk v1.32.0/go.mod h1:jXTQxBxtQ0VsjFqc8dw7tIJj3SDzQN8kcdMq7r83/ZA=
 github.com/clipperhouse/displaywidth v0.11.0 h1:lBc6kY44VFw+TDx4I8opi/EtL9m20WSEFgwIwO+UVM8=
