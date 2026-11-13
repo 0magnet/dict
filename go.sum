@@ -14,8 +14,8 @@ github.com/0magnet/termanim v0.0.1-0.20261110133747-0829f0f9bce5 h1:uszn7bTIIM81
 github.com/0magnet/termanim v0.0.1-0.20261110133747-0829f0f9bce5/go.mod h1:qU0BsjEdnFeMFEMsZCu4C8TX5zsqM5hBvK4rE/LjwhI=
 github.com/0magnet/u-root v0.16.1-0.20261003214924-44e47b732754 h1:wK2MncQOnEea7yqiOHvv3oD89sc+YC1dAw4zw1o48mQ=
 github.com/0magnet/u-root v0.16.1-0.20261003214924-44e47b732754/go.mod h1:9N1kqBjNdAUT/pfrWKyty4zS5ZQgG1OvsTmhdcpAWB0=
-github.com/0magnet/websh v0.0.1-0.20261112135518-a99c708a4523 h1:U+DP0wthNYFImo3vinFVdRVKyjXJJBibu7PEiMMOsDI=
-github.com/0magnet/websh v0.0.1-0.20261112135518-a99c708a4523/go.mod h1:ft53y7/hwTO2udIhniSo/4Yhvo1BkE62iWwMVflaB2c=
+github.com/0magnet/websh v0.0.1-0.20261112140315-f8c2ded42deb h1:GpgQ5URPgNgUNdq9ou8jHoUpFNUMG4hT+cTBAZHHwMg=
+github.com/0magnet/websh v0.0.1-0.20261112140315-f8c2ded42deb/go.mod h1:ft53y7/hwTO2udIhniSo/4Yhvo1BkE62iWwMVflaB2c=
 github.com/0magnet/winbox-go v0.0.1-0.20261109140257-4c5c0e948cd6 h1:Acu0hHryXMCsbLAQz48GNFNyVTPK5Wa/o2IUTIJVDYk=
 github.com/0magnet/winbox-go v0.0.1-0.20261109140257-4c5c0e948cd6/go.mod h1:KQ2aHYc6RnzGCCkgiVJC6qlGDMaSVs3VEEvTfsqJMEk=
 github.com/0magnet/xterm-go v0.0.1-0.20261102175652-6023ed24df89 h1:ofWvOgsbCE3T9NFFZzXi0omtXlk9smvDBJkIdrQ/H9A=
