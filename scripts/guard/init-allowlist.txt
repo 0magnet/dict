@@ -1,0 +1,6 @@
+cmd/adlib.go
+cmd/rain.go
+cmd/root.go
+cmd/serve.go
+cmd/unicode.go
+dictdb/db.go
