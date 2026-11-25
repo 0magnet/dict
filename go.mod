@@ -6,8 +6,8 @@ require (
 	github.com/0magnet/afero v1.15.1-0.20261003211811-482680d00992
 	github.com/0magnet/calvin v0.0.1-0.20261123113739-17ec6c31723c
 	github.com/0magnet/sh/v3 v3.13.2-0.20261024150911-145e01c63128
-	github.com/0magnet/termanim v0.0.1-0.20261123161137-9b9cec0fc245
-	github.com/0magnet/websh v0.0.1-0.20261124162130-3e2dd700684d
+	github.com/0magnet/termanim v0.0.1-0.20261125035614-47ce7bc89a83
+	github.com/0magnet/websh v0.0.1-0.20261125155041-38c9124db3d6
 	github.com/clipperhouse/displaywidth v0.11.0
 	github.com/gdamore/tcell/v3 v3.6.0
 	github.com/spf13/cobra v1.10.2
