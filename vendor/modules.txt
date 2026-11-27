@@ -3,7 +3,7 @@
 github.com/0magnet/afero
 github.com/0magnet/afero/internal/common
 github.com/0magnet/afero/mem
-# github.com/0magnet/bottle v0.0.1-0.20261028202309-2b922f28f74e
+# github.com/0magnet/bottle v0.0.1-0.20261127013808-02b522ecff04
 ## explicit; go 1.24
 github.com/0magnet/bottle/proc
 # github.com/0magnet/calvin v0.0.1-0.20261125222219-4228c77b6748
@@ -33,7 +33,7 @@ github.com/0magnet/termanim/matrix/backdrop
 # github.com/0magnet/u-root v0.16.1-0.20261003214924-44e47b732754
 ## explicit; go 1.26.6
 github.com/0magnet/u-root/pkg/ls
-# github.com/0magnet/websh v0.0.1-0.20261126153202-8e5238d70cff
+# github.com/0magnet/websh v0.0.1-0.20261127151940-35cc3448b035
 ## explicit; go 1.26.6
 github.com/0magnet/websh/progressive
 github.com/0magnet/websh/shell
